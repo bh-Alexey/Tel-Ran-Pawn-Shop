@@ -14,14 +14,10 @@ import java.util.Objects;
 import java.util.Optional;
 
 @Service
+@RequiredArgsConstructor
 public class ClientServiceImpl implements ClientService {
 
     public final ClientRepository clientRepository;
-
-    @Autowired
-    public ClientServiceImpl(ClientRepository clientRepository) {
-        this.clientRepository = clientRepository;
-    }
 
     public List<Client> getClients() {
         return clientRepository.findAll();
@@ -39,7 +35,7 @@ public class ClientServiceImpl implements ClientService {
     public void deleteClient(Long studentId) {
         boolean exists = clientRepository.existsById(studentId);
         if (!exists) {
-            throw new IllegalStateException("student with id " + studentId + " doesn't exist");
+            throw new IllegalStateException("Client with id " + studentId + " doesn't exist");
         }
         clientRepository.deleteById(studentId);
     }
@@ -61,7 +57,7 @@ public class ClientServiceImpl implements ClientService {
         if (email != null && !email.isEmpty() && !Objects.equals(client.getEmail(), email)) {
             Optional<Client> studentOptional = clientRepository.findClientByEmail(email);
             if (studentOptional.isPresent()) {
-                throw new IllegalStateException("email taken");
+                throw new IllegalStateException("Email taken");
             }
             client.setEmail(email);
         }

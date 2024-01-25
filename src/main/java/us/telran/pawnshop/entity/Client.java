@@ -2,6 +2,7 @@ package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.ClientStatus;
@@ -20,7 +21,15 @@ import static jakarta.persistence.GenerationType.*;
 public class Client {
 
     @Id
-    @GeneratedValue(strategy = IDENTITY)
+    @SequenceGenerator(
+            name = "client_sequence",
+            sequenceName = "client_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "client_sequence"
+    )
     private Long clientId;
 
     @Column(name = "status")
@@ -51,4 +60,24 @@ public class Client {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
+    public Client(ClientStatus status,
+                  Long socialSecurityNumber,
+                  LocalDate dateOfBirth,
+                  String firstName,
+                  String lastName,
+                  String email,
+                  String address,
+                  Timestamp createdAt,
+                  Timestamp updatedAt
+    ) {
+        this.status = status;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
+        this.createdAt = createdAt;
+        this.updatedAt = updatedAt;
+    }
 }

@@ -21,7 +21,6 @@ public class ClientConfig {
             ClientRepository clientRepository) {
         return args -> {
             Client mariam = new Client(
-                1L,
                 REGULAR,
                 4231761234L,
                 LocalDate.of(2000, Month.AUGUST, 15),
@@ -34,7 +33,6 @@ public class ClientConfig {
             );
 
             Client alex = new Client(
-                2L,
                     REGULAR,
                 4233451234L,
                     LocalDate.of(2004, Month.JANUARY, 24),

@@ -15,7 +15,7 @@ public class ClientController {
 
     private final ClientService clientService;
 
-    @PostMapping(value = "api/client/new")
+    @PostMapping(value = "new")
     public void createNewClient(@RequestBody Client client) {
         clientService.addNewClient(client);
     }
