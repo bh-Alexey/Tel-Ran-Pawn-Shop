@@ -3,6 +3,7 @@ package us.telran.pawnshop.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.ItemType;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
 
@@ -15,6 +16,7 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "pledges")
 public class Pledge {
 
@@ -23,11 +25,11 @@ public class Pledge {
     private Long pledgeId;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JoinColumn(name = "category_id")
     private PledgeCategory category;
 
     @Column(name = "item")
@@ -44,7 +46,7 @@ public class Pledge {
     private String description;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "manager_id", referencedColumnName = "id")
+    @JoinColumn(name = "manager_id")
     private Manager manager;
 
     @Column(name = "status")

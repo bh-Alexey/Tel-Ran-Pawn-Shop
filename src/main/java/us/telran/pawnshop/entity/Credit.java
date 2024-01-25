@@ -3,6 +3,7 @@ package us.telran.pawnshop.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.CreditStatus;
 
 import java.sql.Timestamp;
@@ -14,8 +15,10 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(name = "credits")
 public class Credit {
+
     public enum CreditTerm {
         WEEK, TWO_WEEKS, THREE_WEEKS, MONTH
     }
@@ -25,15 +28,15 @@ public class Credit {
     private Long creditId;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "client_id", referencedColumnName = "id")
+    @JoinColumn(name = "client_id")
     private Client client;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "product_id", referencedColumnName = "id")
+    @JoinColumn(name = "product_id")
     private Product product;
 
     @OneToOne(cascade = ALL)
-    @JoinColumn(name = "pledge_id", referencedColumnName = "id")
+    @JoinColumn(name = "pledge_id")
     private Pledge pledge;
 
     @Column(name = "credit_amount")

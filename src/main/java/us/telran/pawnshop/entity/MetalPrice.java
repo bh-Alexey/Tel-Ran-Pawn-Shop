@@ -3,6 +3,7 @@ package us.telran.pawnshop.entity;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 
 import static jakarta.persistence.CascadeType.*;
@@ -12,6 +13,7 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @Data
 @AllArgsConstructor
+@NoArgsConstructor
 public class MetalPrice {
 
     @Id
@@ -19,7 +21,7 @@ public class MetalPrice {
     private Long id;
 
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "category_id", referencedColumnName = "id")
+    @JoinColumn(name = "category_id")
     private PledgeCategory category;
 
     @Column(name = "purity")
@@ -28,6 +30,5 @@ public class MetalPrice {
 
     @Column
     private double metalPrice;
-
 
 }

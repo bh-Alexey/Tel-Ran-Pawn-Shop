@@ -1,6 +1,7 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.ClientStatus;
@@ -14,6 +15,7 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "clients")
 public class Client {
 
@@ -26,7 +28,7 @@ public class Client {
     private ClientStatus status;
 
     @Column(name = "ssn")
-    private int socialSecurityNumber;
+    private Long socialSecurityNumber;
 
     @Column(name = "date_of_birth")
     private LocalDate dateOfBirth;
