@@ -26,8 +26,8 @@ public class ClientController {
     }
 
     @DeleteMapping(path = "remove/{clientId}")
-    public void deleteClient(@PathVariable("clientId") Long studentId) {
-        clientService.deleteClient(studentId);
+    public void deleteClient(@PathVariable("clientId") Long clientId) {
+        clientService.deleteClient(clientId);
     }
 
     @PutMapping(path = "update/{clientId}")

@@ -42,12 +42,12 @@ public class ClientServiceImpl implements ClientService {
 
     @Transactional
     public void updateClient(Long clientId,
-                              String firstname,
+                              String firstName,
                               String lastName,
                               String email) {
-        Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalStateException("client with id " + clientId + " doesn't exist"));
-        if (firstname != null && !firstname.isEmpty() && !Objects.equals(client.getFirstName(), firstname)) {
-            client.setFirstName(firstname);
+        Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
+        if (firstName != null && !firstName.isEmpty() && !Objects.equals(client.getFirstName(), firstName)) {
+            client.setFirstName(firstName);
         }
 
         if (lastName != null && !lastName.isEmpty() && !Objects.equals(client.getLastName(), lastName)) {

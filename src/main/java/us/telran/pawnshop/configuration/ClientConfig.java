@@ -6,9 +6,7 @@ import org.springframework.context.annotation.Configuration;
 import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.repository.ClientRepository;
 
-import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.Month;
 import java.util.List;
 
@@ -27,9 +25,7 @@ public class ClientConfig {
                 "Mariam",
                 "Jamal",
                 "mariam.jamal@gmail.com",
-                "235 West 32th Street Apt 6A",
-                Timestamp.valueOf(LocalDateTime.now()),
-                Timestamp.valueOf(LocalDateTime.now())
+                "235 West 32th Street Apt 6A"
             );
 
             Client alex = new Client(
@@ -39,9 +35,7 @@ public class ClientConfig {
                     "Alex",
                     "Graddy",
                     "alex.graddy@gmail.com",
-                    "1123 Madison Ave Apt 16R",
-                    Timestamp.valueOf(LocalDateTime.now()),
-                    Timestamp.valueOf(LocalDateTime.now())
+                    "1123 Madison Ave Apt 16R"
             );
 
             clientRepository.saveAll(

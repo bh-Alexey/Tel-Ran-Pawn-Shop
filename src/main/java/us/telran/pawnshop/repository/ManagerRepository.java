@@ -6,4 +6,5 @@ import us.telran.pawnshop.entity.Manager;
 
 @Repository
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
+
 }

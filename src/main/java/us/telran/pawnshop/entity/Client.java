@@ -66,9 +66,7 @@ public class Client {
                   String firstName,
                   String lastName,
                   String email,
-                  String address,
-                  Timestamp createdAt,
-                  Timestamp updatedAt
+                  String address
     ) {
         this.status = status;
         this.socialSecurityNumber = socialSecurityNumber;
@@ -77,7 +75,5 @@ public class Client {
         this.lastName = lastName;
         this.email = email;
         this.address = address;
-        this.createdAt = createdAt;
-        this.updatedAt = updatedAt;
     }
 }
