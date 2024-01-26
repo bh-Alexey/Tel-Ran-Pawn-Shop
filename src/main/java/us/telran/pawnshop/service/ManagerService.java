@@ -1,6 +1,5 @@
 package us.telran.pawnshop.service;
 
-import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.Manager;
 
 import java.util.List;

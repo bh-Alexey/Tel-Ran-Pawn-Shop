@@ -36,7 +36,7 @@ public class Client {
     @Enumerated(STRING)
     private ClientStatus status;
 
-    @Column(name = "ssn")
+    @Column(name = "ssn", length = 9)
     private Long socialSecurityNumber;
 
     @Column(name = "date_of_birth")

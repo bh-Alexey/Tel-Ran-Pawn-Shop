@@ -20,7 +20,7 @@ public class ClientConfig {
         return args -> {
             Client mariam = new Client(
                 REGULAR,
-                4231761234L,
+                423176123L,
                 LocalDate.of(2000, Month.AUGUST, 15),
                 "Mariam",
                 "Jamal",
@@ -30,7 +30,7 @@ public class ClientConfig {
 
             Client alex = new Client(
                     REGULAR,
-                4233451234L,
+                    423345123L,
                     LocalDate.of(2004, Month.JANUARY, 24),
                     "Alex",
                     "Graddy",
