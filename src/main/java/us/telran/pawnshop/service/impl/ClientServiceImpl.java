@@ -25,19 +25,20 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void addNewClient(Client client) {
-        Optional<Client> studentOptional = clientRepository.findClientByEmail(client.getEmail());
-        if (studentOptional.isPresent()) {
-            throw new IllegalStateException("email taken");
+        Optional<Client> clientOptional = clientRepository.findClientByEmail(client.getEmail());
+        if (clientOptional.isPresent()) {
+            throw new IllegalStateException("Email registered");
         }
         clientRepository.save(client);
     }
 
-    public void deleteClient(Long studentId) {
-        boolean exists = clientRepository.existsById(studentId);
+    @Override
+    public void deleteClient(Long clientId) {
+        boolean exists = clientRepository.existsById(clientId);
         if (!exists) {
-            throw new IllegalStateException("Client with id " + studentId + " doesn't exist");
+            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
         }
-        clientRepository.deleteById(studentId);
+        clientRepository.deleteById(clientId);
     }
 
     @Transactional
@@ -55,9 +56,9 @@ public class ClientServiceImpl implements ClientService {
         }
 
         if (email != null && !email.isEmpty() && !Objects.equals(client.getEmail(), email)) {
-            Optional<Client> studentOptional = clientRepository.findClientByEmail(email);
-            if (studentOptional.isPresent()) {
-                throw new IllegalStateException("Email taken");
+            Optional<Client> clientOptional = clientRepository.findClientByEmail(email);
+            if (clientOptional.isPresent()) {
+                throw new IllegalStateException("Email registered");
             }
             client.setEmail(email);
         }

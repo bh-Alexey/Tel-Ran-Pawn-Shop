@@ -20,7 +20,21 @@ public class ManagerController {
     }
 
     @PostMapping(value = "new")
-    public void createNewClient(@RequestBody Manager manager) {
+    public void createNewManager(@RequestBody Manager manager) {
         managerService.addNewManager(manager);
+    }
+
+    @DeleteMapping(path = "remove/{managerId}")
+    public void deleteManager(@PathVariable("managerId") Long managerId) {
+        managerService.deleteManager(managerId);
+    }
+
+    @PutMapping(path = "update/{managerId}")
+    public void updateManager(
+            @PathVariable("managerId") Long managerId,
+            @RequestParam(required = false) String firstName,
+            @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) String email) {
+        managerService.updateManager(managerId, firstName, lastName, email);
     }
 }

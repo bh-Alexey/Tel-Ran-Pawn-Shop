@@ -26,6 +26,9 @@ public class Manager {
     @Column(name = "last_name")
     private String lastName;
 
+    @Column(name = "email")
+    private String email;
+
     @Column(name = "created_at")
     private Timestamp createdAt;
 
