@@ -28,6 +28,7 @@ public class ManagerServiceImpl implements ManagerService {
         if (managerOptional.isPresent()) {
             throw new IllegalStateException("Email registered");
         }
+        managerRepository.save(manager);
     }
 
     @Override
@@ -39,12 +40,14 @@ public class ManagerServiceImpl implements ManagerService {
         managerRepository.deleteById(managerId);
     }
 
+    @Override
     @Transactional
     public void updateManager(Long managerId,
                              String firstName,
                              String lastName,
                              String email) {
         Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new IllegalStateException("Manager with id " + managerId + " doesn't exist"));
+
         if (firstName != null && !firstName.isEmpty() && !Objects.equals(manager.getFirstName(), firstName)) {
             manager.setFirstName(firstName);
         }

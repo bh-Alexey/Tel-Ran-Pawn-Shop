@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import lombok.RequiredArgsConstructor;
 import us.telran.pawnshop.entity.enums.PreciousMetal;
 
 import static jakarta.persistence.EnumType.*;
@@ -13,9 +12,19 @@ import static jakarta.persistence.EnumType.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
+@Table(name = "categories")
 public class PledgeCategory {
 
     @Id
+    @SequenceGenerator(
+            name = "categories_sequence",
+            sequenceName = "categories_sequence",
+            allocationSize = 1
+    )
+    @GeneratedValue(
+            strategy = GenerationType.SEQUENCE,
+            generator = "categories_sequence"
+    )
     private Long categoryId;
 
     @Column(name = "precious_metal")

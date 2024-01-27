@@ -1,11 +1,9 @@
 package us.telran.pawnshop.service.impl;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.entity.Client;
-import us.telran.pawnshop.entity.enums.ClientStatus;
 import us.telran.pawnshop.repository.ClientRepository;
 import us.telran.pawnshop.service.ClientService;
 
@@ -41,12 +39,15 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.deleteById(clientId);
     }
 
+    @Override
     @Transactional
     public void updateClient(Long clientId,
                               String firstName,
                               String lastName,
                               String email) {
-        Client client = clientRepository.findById(clientId).orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
+        Client client = clientRepository.findById(clientId)
+                .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
+
         if (firstName != null && !firstName.isEmpty() && !Objects.equals(client.getFirstName(), firstName)) {
             client.setFirstName(firstName);
         }
