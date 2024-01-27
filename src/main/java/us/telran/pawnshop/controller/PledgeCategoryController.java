@@ -3,7 +3,6 @@ package us.telran.pawnshop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.PledgeCategory;
 import us.telran.pawnshop.entity.enums.PreciousMetal;
 import us.telran.pawnshop.service.PledgeCategoryService;
