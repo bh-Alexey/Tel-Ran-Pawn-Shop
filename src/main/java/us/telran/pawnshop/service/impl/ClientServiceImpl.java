@@ -42,9 +42,9 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void updateClient(Long clientId,
-                              String firstName,
-                              String lastName,
-                              String email) {
+                             String firstName,
+                             String lastName,
+                             String email) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
 

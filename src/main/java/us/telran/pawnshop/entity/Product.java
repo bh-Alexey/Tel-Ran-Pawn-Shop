@@ -2,6 +2,7 @@ package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import us.telran.pawnshop.entity.enums.ProductName;
 import us.telran.pawnshop.entity.enums.ProductStatus;
 
 import java.sql.Timestamp;
@@ -19,7 +20,7 @@ public class Product {
     private Long productId;
 
     @Column(name = "product_name")
-    private String productName;
+    private ProductName productName;
 
     @Column(name = "status")
     @Enumerated(STRING)

@@ -39,4 +39,10 @@ public class Manager {
     @Enumerated(STRING)
     private ManagerStatus managerStatus;
 
+    public Manager(String firstName, String lastName, String email, ManagerStatus managerStatus) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.managerStatus = managerStatus;
+    }
 }
