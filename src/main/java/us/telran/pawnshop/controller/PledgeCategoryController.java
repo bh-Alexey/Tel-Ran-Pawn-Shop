@@ -27,7 +27,7 @@ public class PledgeCategoryController {
     }
 
     @DeleteMapping(path = "remove/{categoryId}")
-    public void deleteClient(@PathVariable("categoryId") Long categoryId) {
+    public void deleteCategory(@PathVariable("categoryId") Long categoryId) {
         pledgeCategoryService.deleteCategory(categoryId);
     }
 

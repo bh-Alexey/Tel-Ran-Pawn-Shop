@@ -14,15 +14,16 @@ import static jakarta.persistence.GenerationType.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class MetalPrice {
+@Table(name = "metal_price")
+public class PreciousMetalPrice {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long id;
+    private Long priceId;
 
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "category_id")
-    private PledgeCategory category;
+    private PledgeCategory categoryId;
 
     @Column(name = "purity")
     @Enumerated(STRING)
@@ -30,5 +31,4 @@ public class MetalPrice {
 
     @Column
     private double metalPrice;
-
 }

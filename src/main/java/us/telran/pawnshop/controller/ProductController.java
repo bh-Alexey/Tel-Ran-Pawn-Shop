@@ -18,7 +18,7 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping(value = "add")
-    public void createNewClient(@RequestBody Product product) {
+    public void createNewProduct(@RequestBody Product product) {
         productService.addNewProduct(product);
     }
 
@@ -28,12 +28,12 @@ public class ProductController {
     }
 
     @DeleteMapping(path = "remove/{productId}")
-    public void deleteClient(@PathVariable("productId") Long productId) {
+    public void deleteProduct(@PathVariable("productId") Long productId) {
         productService.deleteProduct(productId);
     }
 
     @PutMapping(path = "change/{productId}")
-    public void updateById(@PathVariable("productId") Long productId,
+    public void updateProductById(@PathVariable("productId") Long productId,
                            @RequestParam(required = false) ProductName productName,
                            @RequestParam(required = false) ProductStatus productStatus,
                            @RequestParam(required = false) double interestRate) {

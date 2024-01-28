@@ -46,7 +46,8 @@ public class ManagerServiceImpl implements ManagerService {
                              String firstName,
                              String lastName,
                              String email) {
-        Manager manager = managerRepository.findById(managerId).orElseThrow(() -> new IllegalStateException("Manager with id " + managerId + " doesn't exist"));
+        Manager manager = managerRepository.findById(managerId)
+                .orElseThrow(() -> new IllegalStateException("Manager with id " + managerId + " doesn't exist"));
 
         if (firstName != null && !firstName.isEmpty() && !Objects.equals(manager.getFirstName(), firstName)) {
             manager.setFirstName(firstName);
