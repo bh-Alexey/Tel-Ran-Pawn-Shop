@@ -1,9 +1,8 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import us.telran.pawnshop.entity.Client;
-import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
 import us.telran.pawnshop.repository.PreciousMetalPriceRepository;
 import us.telran.pawnshop.service.PreciousMetalPriceService;
@@ -17,6 +16,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
 
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
     @Override
+    @Transactional
     public void updateMetalPrice(Long priceId, double metalPrice) {
         PreciousMetalPrice preciousMetalPrice = preciousMetalPriceRepository.findById(priceId)
                 .orElseThrow(() -> new IllegalStateException("Manager with id " + priceId + " doesn't exist"));

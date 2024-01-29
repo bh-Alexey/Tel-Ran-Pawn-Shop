@@ -17,10 +17,6 @@ public class ClientServiceImpl implements ClientService {
 
     public final ClientRepository clientRepository;
 
-    public List<Client> getClients() {
-        return clientRepository.findAll();
-    }
-
     @Override
     public void addNewClient(Client client) {
         Optional<Client> clientOptional = clientRepository.findClientByEmail(client.getEmail());
@@ -30,13 +26,8 @@ public class ClientServiceImpl implements ClientService {
         clientRepository.save(client);
     }
 
-    @Override
-    public void deleteClient(Long clientId) {
-        boolean exists = clientRepository.existsById(clientId);
-        if (!exists) {
-            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
-        }
-        clientRepository.deleteById(clientId);
+    public List<Client> getClients() {
+        return clientRepository.findAll();
     }
 
     @Override
@@ -63,5 +54,14 @@ public class ClientServiceImpl implements ClientService {
             }
             client.setEmail(email);
         }
+    }
+
+    @Override
+    public void deleteClient(Long clientId) {
+        boolean exists = clientRepository.existsById(clientId);
+        if (!exists) {
+            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
+        }
+        clientRepository.deleteById(clientId);
     }
 }

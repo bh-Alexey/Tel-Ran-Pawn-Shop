@@ -5,7 +5,6 @@ import us.telran.pawnshop.entity.Client;
 
 import java.util.List;
 
-@Service
 public interface ClientService {
     void addNewClient(Client client);
 
