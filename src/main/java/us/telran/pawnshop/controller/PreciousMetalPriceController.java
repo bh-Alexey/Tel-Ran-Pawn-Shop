@@ -19,7 +19,7 @@ public class PreciousMetalPriceController {
         preciousMetalPriceService.addNewPrice(preciousMetalPrice);
     }
 
-    @GetMapping
+    @GetMapping(value = "show")
     public List<PreciousMetalPrice> getMetalPrice() {
         return preciousMetalPriceService.getMetalPrice();
     }

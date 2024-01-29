@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import us.telran.pawnshop.entity.Credit;
@@ -26,6 +27,7 @@ public class CreditServiceImpl implements CreditService {
     }
 
     @Override
+    @Transactional
     public void updateCredit(Long creditId, double creditAmount, double ransomAmount, Credit.CreditTerm term, CreditStatus status) {
         Credit credit = creditRepository.findById(creditId)
                 .orElseThrow(() -> new IllegalStateException("Credit with id " + creditId + " doesn't exist"));

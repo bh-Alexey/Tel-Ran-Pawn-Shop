@@ -2,7 +2,6 @@ package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
-import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.service.ManagerService;
 
