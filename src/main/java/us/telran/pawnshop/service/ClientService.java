@@ -12,5 +12,5 @@ public interface ClientService {
 
     void deleteClient(Long clientId);
 
-    void updateClient(Long clientId, String firstName, String lastName, String email);
+    void updateClient(Long clientId, String firstName, String lastName, String email, String address);
 }

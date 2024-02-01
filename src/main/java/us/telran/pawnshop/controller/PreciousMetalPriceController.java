@@ -3,8 +3,10 @@ package us.telran.pawnshop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
+import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.service.PreciousMetalPriceService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -31,7 +33,7 @@ public class PreciousMetalPriceController {
 
     @PutMapping(path = "change/{priceId}")
     public void updateMetalPrice(@PathVariable("priceId") Long priceId,
-                           @RequestParam(required = false) double metalPrice) {
+                           @RequestParam(required = false) BigDecimal metalPrice) {
         preciousMetalPriceService.updateMetalPrice(priceId, metalPrice);
     }
 

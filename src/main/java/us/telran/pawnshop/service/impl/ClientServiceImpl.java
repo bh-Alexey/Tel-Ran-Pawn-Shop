@@ -21,7 +21,7 @@ public class ClientServiceImpl implements ClientService {
     public void addNewClient(Client client) {
         Optional<Client> clientOptional = clientRepository.findClientByEmail(client.getEmail());
         if (clientOptional.isPresent()) {
-            throw new IllegalStateException("Email registered");
+            throw new IllegalStateException("Email registered, client might be exist");
         }
         clientRepository.save(client);
     }
@@ -35,11 +35,14 @@ public class ClientServiceImpl implements ClientService {
     public void updateClient(Long clientId,
                              String firstName,
                              String lastName,
-                             String email) {
+                             String email,
+                             String address) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
 
-        if (firstName != null && !firstName.isEmpty() && !Objects.equals(client.getFirstName(), firstName)) {
+        if (firstName != null
+                && !firstName.isEmpty()
+                && !Objects.equals(client.getFirstName(), firstName)) {
             client.setFirstName(firstName);
         }
 
@@ -47,13 +50,17 @@ public class ClientServiceImpl implements ClientService {
             client.setLastName(lastName);
         }
 
-        if (email != null && !email.isEmpty() && !Objects.equals(client.getEmail(), email)) {
+        if (email != null
+                && !email.isEmpty()
+                && !Objects.equals(client.getEmail(), email)) {
             Optional<Client> clientOptional = clientRepository.findClientByEmail(email);
             if (clientOptional.isPresent()) {
                 throw new IllegalStateException("Email registered");
             }
             client.setEmail(email);
         }
+
+        client.setAddress(address);
     }
 
     @Override

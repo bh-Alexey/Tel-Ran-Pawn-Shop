@@ -7,6 +7,7 @@ import us.telran.pawnshop.entity.PreciousMetalPrice;
 import us.telran.pawnshop.repository.PreciousMetalPriceRepository;
 import us.telran.pawnshop.service.PreciousMetalPriceService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -15,13 +16,6 @@ import java.util.Optional;
 public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService {
 
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
-    @Override
-    @Transactional
-    public void updateMetalPrice(Long priceId, double metalPrice) {
-        PreciousMetalPrice preciousMetalPrice = preciousMetalPriceRepository.findById(priceId)
-                .orElseThrow(() -> new IllegalStateException("Manager with id " + priceId + " doesn't exist"));
-        preciousMetalPrice.setMetalPrice(metalPrice);
-    }
 
     @Override
     public void addNewPrice(PreciousMetalPrice preciousMetalPrice) {
@@ -35,6 +29,14 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
     @Override
     public List<PreciousMetalPrice> getMetalPrice() {
         return preciousMetalPriceRepository.findAll();
+    }
+
+    @Override
+    @Transactional
+    public void updateMetalPrice(Long priceId, BigDecimal metalPrice) {
+        PreciousMetalPrice preciousMetalPrice = preciousMetalPriceRepository.findById(priceId)
+                .orElseThrow(() -> new IllegalStateException("Manager with id " + priceId + " doesn't exist"));
+        preciousMetalPrice.setMetalPrice(metalPrice);
     }
 
     @Override

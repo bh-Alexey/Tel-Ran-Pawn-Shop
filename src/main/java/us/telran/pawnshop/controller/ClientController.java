@@ -35,7 +35,8 @@ public class ClientController {
             @PathVariable("clientId") Long clientId,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
-            @RequestParam(required = false) String email) {
-        clientService.updateClient(clientId, firstName, lastName, email);
+            @RequestParam(required = false) String email,
+            @RequestParam(required = false) String address) {
+        clientService.updateClient(clientId, firstName, lastName, email, address);
     }
 }

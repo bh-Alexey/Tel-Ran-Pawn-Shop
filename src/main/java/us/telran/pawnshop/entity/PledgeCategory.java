@@ -6,6 +6,10 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.PreciousMetal;
 
+import java.util.List;
+import java.util.Set;
+
+import static jakarta.persistence.CascadeType.ALL;
 import static jakarta.persistence.EnumType.*;
 
 @Entity
@@ -31,4 +35,6 @@ public class PledgeCategory {
     @Enumerated(STRING)
     private PreciousMetal categoryName;
 
+    @OneToMany(mappedBy = "category", cascade = ALL, orphanRemoval = true)
+    private Set<PreciousMetalPrice> prices;
 }
