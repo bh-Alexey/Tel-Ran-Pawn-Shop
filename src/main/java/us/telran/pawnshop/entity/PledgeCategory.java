@@ -4,9 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
+import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.entity.enums.PreciousMetal;
 
+import java.math.BigDecimal;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 
 import static jakarta.persistence.CascadeType.ALL;
@@ -36,5 +39,5 @@ public class PledgeCategory {
     private PreciousMetal categoryName;
 
     @OneToMany(mappedBy = "category", cascade = ALL, orphanRemoval = true)
-    private Set<PreciousMetalPrice> prices;
+    private List<PreciousMetalPrice> metalPrices;
 }

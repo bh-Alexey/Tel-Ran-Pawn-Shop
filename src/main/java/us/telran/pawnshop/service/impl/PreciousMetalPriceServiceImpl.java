@@ -3,7 +3,10 @@ package us.telran.pawnshop.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import us.telran.pawnshop.entity.PledgeCategory;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
+import us.telran.pawnshop.entity.enums.MetalPurity;
+import us.telran.pawnshop.repository.PledgeCategoryRepository;
 import us.telran.pawnshop.repository.PreciousMetalPriceRepository;
 import us.telran.pawnshop.service.PreciousMetalPriceService;
 
@@ -17,13 +20,24 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
 
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
 
+    private final PledgeCategoryRepository pledgeCategoryRepository;
+
+
     @Override
-    public void addNewPrice(PreciousMetalPrice preciousMetalPrice) {
-        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository.findMetalByPurity(preciousMetalPrice.getPurity());
+    @Transactional
+    public void addNewPrice(Long categoryId, MetalPurity purity, BigDecimal metalPrice) {
+
+        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository.findMetalByPurity(purity);
         if (preciousMetalPriceOptional.isPresent()) {
-            throw new IllegalStateException("Price presented");
+            throw new IllegalStateException("Price for this purity " + purity + " already presented");
         }
-        preciousMetalPriceRepository.save(preciousMetalPrice);
+        else {
+            PreciousMetalPrice newPrice = new PreciousMetalPrice();
+            newPrice.setCategory(pledgeCategoryRepository.getReferenceById(categoryId));
+            newPrice.setPurity(purity);
+            newPrice.setMetalPrice(metalPrice);
+            preciousMetalPriceRepository.save(newPrice);
+        }
     }
 
     @Override

@@ -17,8 +17,10 @@ public class PreciousMetalPriceController {
     private final PreciousMetalPriceService preciousMetalPriceService;
 
     @PostMapping(value = "add")
-    public void addNewPrice(@RequestBody PreciousMetalPrice preciousMetalPrice) {
-        preciousMetalPriceService.addNewPrice(preciousMetalPrice);
+    public void addNewPrice(@RequestParam Long categoryId,
+                            @RequestParam MetalPurity purity,
+                            @RequestParam BigDecimal metalPrice) {
+        preciousMetalPriceService.addNewPrice(categoryId, purity, metalPrice);
     }
 
     @GetMapping(value = "show")

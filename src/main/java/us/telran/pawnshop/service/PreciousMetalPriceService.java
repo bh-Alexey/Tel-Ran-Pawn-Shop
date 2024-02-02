@@ -8,7 +8,7 @@ import java.util.List;
 
 public interface PreciousMetalPriceService {
 
-    void addNewPrice(PreciousMetalPrice preciousMetalPrice);
+    void addNewPrice(Long categoryId, MetalPurity purity, BigDecimal metalPrice);
     void updateMetalPrice(Long priceId, BigDecimal metalPrice);
 
     List<PreciousMetalPrice> getMetalPrice();
