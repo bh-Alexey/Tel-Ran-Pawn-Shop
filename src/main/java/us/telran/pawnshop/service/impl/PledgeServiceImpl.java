@@ -3,13 +3,16 @@ package us.telran.pawnshop.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import us.telran.pawnshop.entity.Pledge;
+import us.telran.pawnshop.dto.PledgeCreationRequest;
+import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
-import us.telran.pawnshop.repository.PledgeRepository;
+import us.telran.pawnshop.repository.*;
 import us.telran.pawnshop.service.PledgeService;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
+import java.util.Optional;
 
 
 @Service
@@ -17,9 +20,37 @@ import java.util.Objects;
 public class PledgeServiceImpl implements PledgeService {
 
     private final PledgeRepository pledgeRepository;
+    private final ClientRepository clientRepository;
+    private final PledgeCategoryRepository pledgeCategoryRepository;
+    private final ManagerRepository managerRepository;
+    private final PreciousMetalPriceRepository preciousMetalPriceRepository;
 
     @Override
-    public void newPledge(Pledge pledge) {
+    @Transactional
+    public void newPledge(PledgeCreationRequest pledgeCreationRequest) {
+        Client client = clientRepository.findById(pledgeCreationRequest.getClientId())
+                .orElseThrow(() -> new IllegalStateException("Client not found"));
+
+        PledgeCategory category = pledgeCategoryRepository.findById(pledgeCreationRequest.getCategoryId())
+                .orElseThrow(() -> new IllegalStateException("Category not identify"));
+
+        Manager manager = managerRepository.findById(pledgeCreationRequest.getManagerId())
+                .orElseThrow(() -> new IllegalStateException("Manager not have been chosen"));
+
+        PreciousMetalPrice metalPrice = preciousMetalPriceRepository.findByPurity(pledgeCreationRequest.getPurity())
+                .orElseThrow(() -> new IllegalStateException("Price not found"));
+
+        Pledge pledge = new Pledge();
+        pledge.setClient(client);
+        pledge.setCategory(category);
+        pledge.setManager(manager);
+        pledge.setItem(pledgeCreationRequest.getItem());
+        pledge.setDescription(pledgeCreationRequest.getDescription());
+        pledge.setPurity(pledgeCreationRequest.getPurity());
+        pledge.setWeightGross(pledgeCreationRequest.getWeightGross());
+        pledge.setWeightNet(pledgeCreationRequest.getWeightNet());
+        pledge.setEstimatedPrice(pledge.getWeightNet().multiply(metalPrice.getMetalPrice()));
+        pledge.setStatus(PledgeStatus.PLEDGED);
         pledgeRepository.save(pledge);
     }
 

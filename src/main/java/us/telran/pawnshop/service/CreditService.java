@@ -6,6 +6,8 @@ import us.telran.pawnshop.entity.enums.CreditStatus;
 import java.util.List;
 
 public interface CreditService {
+    void updateCreditStatus(Long creditId, CreditStatus status);
+
     void newCredit(Credit credit);
 
     List<Credit> getCredits();

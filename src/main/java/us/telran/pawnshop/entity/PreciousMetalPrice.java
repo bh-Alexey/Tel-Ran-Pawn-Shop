@@ -4,14 +4,12 @@ import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
-import org.hibernate.annotations.CreationTimestamp;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.util.List;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.EnumType.*;

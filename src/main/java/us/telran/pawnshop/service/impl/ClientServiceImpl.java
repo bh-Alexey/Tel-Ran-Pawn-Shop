@@ -4,9 +4,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.entity.Client;
+import us.telran.pawnshop.entity.enums.ClientStatus;
 import us.telran.pawnshop.repository.ClientRepository;
 import us.telran.pawnshop.service.ClientService;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -19,12 +21,26 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     public void addNewClient(Client client) {
-        Optional<Client> clientOptional = clientRepository.findClientByEmail(client.getEmail());
+        Optional<Client> clientOptional = clientRepository
+                .findClientByEmail(client.getEmail());
         if (clientOptional.isPresent()) {
             throw new IllegalStateException("Email registered, client might be exist");
         }
+        client.setStatus(ClientStatus.REGULAR);
         clientRepository.save(client);
     }
+
+    @Override
+    public void addNewClientReal(Client client) {
+        Optional<Client> clientOptional = clientRepository
+                .findClientBySsn(client.getSocialSecurityNumber());
+        if (clientOptional.isPresent()) {
+            throw new IllegalStateException("Client registered");
+        }
+        client.setStatus(ClientStatus.REGULAR);
+        clientRepository.save(client);
+    }
+
 
     public List<Client> getClients() {
         return clientRepository.findAll();
@@ -35,6 +51,7 @@ public class ClientServiceImpl implements ClientService {
     public void updateClient(Long clientId,
                              String firstName,
                              String lastName,
+                             LocalDate dateOfBirth,
                              String email,
                              String address) {
         Client client = clientRepository.findById(clientId)
@@ -46,7 +63,8 @@ public class ClientServiceImpl implements ClientService {
             client.setFirstName(firstName);
         }
 
-        if (lastName != null && !lastName.isEmpty() && !Objects.equals(client.getLastName(), lastName)) {
+        if (lastName != null && !lastName.isEmpty()
+                && !Objects.equals(client.getLastName(), lastName)) {
             client.setLastName(lastName);
         }
 
@@ -59,7 +77,7 @@ public class ClientServiceImpl implements ClientService {
             }
             client.setEmail(email);
         }
-
+        client.setDateOfBirth(dateOfBirth);
         client.setAddress(address);
     }
 

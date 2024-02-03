@@ -12,5 +12,6 @@ import java.util.Optional;
 public interface PreciousMetalPriceRepository extends JpaRepository<PreciousMetalPrice, Long> {
 
     @Query(nativeQuery = true, value = "SELECT * FROM metal_price WHERE purity LIKE :purity% ")
-    Optional<PreciousMetalPrice> findMetalByPurity(MetalPurity purity);
+    Optional<PreciousMetalPrice> findByPurity(MetalPurity purity);
+
 }

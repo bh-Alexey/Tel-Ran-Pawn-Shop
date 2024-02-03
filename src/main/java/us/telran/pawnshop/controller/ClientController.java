@@ -6,6 +6,7 @@ import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.service.ClientService;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @RestController
@@ -35,8 +36,9 @@ public class ClientController {
             @PathVariable("clientId") Long clientId,
             @RequestParam(required = false) String firstName,
             @RequestParam(required = false) String lastName,
+            @RequestParam(required = false) LocalDate dateOfBirth,
             @RequestParam(required = false) String email,
             @RequestParam(required = false) String address) {
-        clientService.updateClient(clientId, firstName, lastName, email, address);
+        clientService.updateClient(clientId, firstName, lastName, dateOfBirth, email, address);
     }
 }

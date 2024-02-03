@@ -17,8 +17,15 @@ public class CreditServiceImpl implements CreditService {
     private final CreditRepository creditRepository;
 
     @Override
-    public void newCredit(Credit credit) {
-        creditRepository.save(credit);
+    @Transactional
+    public void updateCreditStatus(Long creditId, CreditStatus status) {
+        Credit credit = creditRepository.findById(creditId)
+                .orElseThrow(() -> new IllegalStateException("Credit with id " + creditId + " doesn't exist"));
+        credit.setStatus(status);
+    }
+
+    @Override
+    public void newCredit(Credit credit) { creditRepository.save(credit);
     }
 
     @Override

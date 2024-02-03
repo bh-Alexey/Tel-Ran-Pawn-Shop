@@ -27,14 +27,6 @@ public class Credit {
     @GeneratedValue(strategy = IDENTITY)
     private Long creditId;
 
-    @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "client_id")
-    private Client client;
-
-    @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "product_id")
-    private Product product;
-
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "pledge_id")
     private Pledge pledge;

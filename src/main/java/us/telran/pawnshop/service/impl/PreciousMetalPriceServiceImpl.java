@@ -3,7 +3,6 @@ package us.telran.pawnshop.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import us.telran.pawnshop.entity.PledgeCategory;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.repository.PledgeCategoryRepository;
@@ -27,7 +26,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
     @Transactional
     public void addNewPrice(Long categoryId, MetalPurity purity, BigDecimal metalPrice) {
 
-        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository.findMetalByPurity(purity);
+        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository.findByPurity(purity);
         if (preciousMetalPriceOptional.isPresent()) {
             throw new IllegalStateException("Price for this purity " + purity + " already presented");
         }

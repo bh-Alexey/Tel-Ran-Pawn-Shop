@@ -2,6 +2,7 @@ package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.dto.PledgeCreationRequest;
 import us.telran.pawnshop.entity.Pledge;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.service.PledgeService;
@@ -16,8 +17,8 @@ public class PledgeController {
     private final PledgeService pledgeService;
 
     @PostMapping(value = "new")
-    public void createNewPledge(@RequestBody Pledge pledge) {
-        pledgeService.newPledge(pledge);
+    public void createNewPledge(@RequestBody PledgeCreationRequest pledgeCreationRequest) {
+        pledgeService.newPledge(pledgeCreationRequest);
     }
 
     @GetMapping

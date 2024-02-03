@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.concurrent.ThreadLocalRandom;
 
 import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.GenerationType.*;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -30,7 +31,7 @@ public class Client {
             allocationSize = 1
     )
     @GeneratedValue(
-            strategy = GenerationType.SEQUENCE,
+            strategy = SEQUENCE,
             generator = "client_sequence"
     )
     private Long clientId;
