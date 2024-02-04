@@ -1,15 +1,16 @@
 package us.telran.pawnshop.service;
 
 import org.springframework.stereotype.Service;
+import us.telran.pawnshop.dto.ClientCreationRequest;
 import us.telran.pawnshop.entity.Client;
 
 import java.time.LocalDate;
 import java.util.List;
 
 public interface ClientService {
-    void addNewClient(Client client);
+    void addNewClient(ClientCreationRequest clientCreationRequest);
 
-    void addNewClientReal(Client client);
+    void addNewClientReal(ClientCreationRequest clientCreationRequest);
 
     List<Client> getClients();
 

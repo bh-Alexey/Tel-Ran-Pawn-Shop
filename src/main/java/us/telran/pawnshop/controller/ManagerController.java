@@ -2,6 +2,7 @@ package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.dto.ManagerCreationRequest;
 import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.service.ManagerService;
 
@@ -19,8 +20,8 @@ public class ManagerController {
     }
 
     @PostMapping(value = "new")
-    public void createNewManager(@RequestBody Manager manager) {
-        managerService.addNewManager(manager);
+    public void createNewManager(@RequestBody ManagerCreationRequest managerCreationRequest) {
+        managerService.addNewManager(managerCreationRequest);
     }
 
     @DeleteMapping(path = "remove/{managerId}")

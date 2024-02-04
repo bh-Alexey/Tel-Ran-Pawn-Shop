@@ -2,10 +2,12 @@ package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.dto.CreditCreationRequest;
 import us.telran.pawnshop.entity.Credit;
 import us.telran.pawnshop.entity.enums.CreditStatus;
 import us.telran.pawnshop.service.CreditService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -16,8 +18,8 @@ public class CreditController {
     private final CreditService creditService;
 
     @PostMapping(value = "new")
-    public void createNewClient(@RequestBody Credit credit) {
-        creditService.newCredit(credit);
+    public void createNewClient(@RequestBody CreditCreationRequest creditCreationRequest) {
+        creditService.newCredit(creditCreationRequest);
     }
 
     @GetMapping
@@ -33,8 +35,8 @@ public class CreditController {
     @PutMapping(path = "update/{creditId}")
     public void updateCredit(
             @PathVariable("creditId") Long creditId,
-            @RequestParam(required = false) double creditAmount,
-            @RequestParam(required = false) double ransomAmount,
+            @RequestParam(required = false) BigDecimal creditAmount,
+            @RequestParam(required = false) BigDecimal ransomAmount,
             @RequestParam(required = false) Credit.CreditTerm term,
             @RequestParam(required = false) CreditStatus status) {
         creditService.updateCredit(creditId, creditAmount, ransomAmount, term, status);

@@ -35,7 +35,8 @@ public class PledgeController {
     public void updatePledge(
             @PathVariable("pledgeId") Long pledgeId,
             @RequestParam(required = false) String description,
-            @RequestParam(required = false) PledgeStatus status) {
-        pledgeService.updatePledge(pledgeId, description, status);
+            @RequestParam(required = false) PledgeStatus status,
+            @RequestParam(required = false) int itemQuantity) {
+        pledgeService.updatePledge(pledgeId, description, status, itemQuantity);
     }
 }

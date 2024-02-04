@@ -3,6 +3,7 @@ package us.telran.pawnshop.service.impl;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import us.telran.pawnshop.dto.ClientCreationRequest;
 import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.enums.ClientStatus;
 import us.telran.pawnshop.repository.ClientRepository;
@@ -20,28 +21,49 @@ public class ClientServiceImpl implements ClientService {
     public final ClientRepository clientRepository;
 
     @Override
-    public void addNewClient(Client client) {
+    @Transactional
+    public void addNewClient(ClientCreationRequest clientCreationRequest) {
+        if (!clientCreationRequest.isValid()) {
+            throw new IllegalArgumentException("Invalid client creation request");
+        }
         Optional<Client> clientOptional = clientRepository
-                .findClientByEmail(client.getEmail());
+                .findClientByEmail(clientCreationRequest.getEmail());
         if (clientOptional.isPresent()) {
             throw new IllegalStateException("Email registered, client might be exist");
         }
+
+        Client client = new Client();
+        client.setFirstName(clientCreationRequest.getFirstName());
+        client.setLastName(clientCreationRequest.getLastName());
+        client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
+        client.setSocialSecurityNumber(clientCreationRequest.getSocialSecurityNumber());
+        client.setEmail(clientCreationRequest.getEmail());
+        client.setAddress(clientCreationRequest.getAddress());
         client.setStatus(ClientStatus.REGULAR);
         clientRepository.save(client);
     }
 
     @Override
-    public void addNewClientReal(Client client) {
+    @Transactional
+    public void addNewClientReal(ClientCreationRequest clientCreationRequest) {
         Optional<Client> clientOptional = clientRepository
-                .findClientBySsn(client.getSocialSecurityNumber());
+                .findClientBySsn(clientCreationRequest.getSocialSecurityNumber());
         if (clientOptional.isPresent()) {
             throw new IllegalStateException("Client registered");
         }
+        Client client = new Client();
+        client.setFirstName(clientCreationRequest.getFirstName());
+        client.setLastName(clientCreationRequest.getLastName());
+        client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
+        client.generateSocialSecurityNumber();
+        client.setEmail(clientCreationRequest.getEmail());
+        client.setAddress(clientCreationRequest.getAddress());
         client.setStatus(ClientStatus.REGULAR);
         clientRepository.save(client);
     }
 
 
+    @Override
     public List<Client> getClients() {
         return clientRepository.findAll();
     }
@@ -58,19 +80,19 @@ public class ClientServiceImpl implements ClientService {
                 .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
 
         if (firstName != null
-                && !firstName.isEmpty()
-                && !Objects.equals(client.getFirstName(), firstName)) {
+                   && !firstName.isEmpty()
+                   && !Objects.equals(client.getFirstName(), firstName)) {
             client.setFirstName(firstName);
         }
 
         if (lastName != null && !lastName.isEmpty()
-                && !Objects.equals(client.getLastName(), lastName)) {
+                  && !Objects.equals(client.getLastName(), lastName)) {
             client.setLastName(lastName);
         }
 
         if (email != null
-                && !email.isEmpty()
-                && !Objects.equals(client.getEmail(), email)) {
+               && !email.isEmpty()
+               && !Objects.equals(client.getEmail(), email)) {
             Optional<Client> clientOptional = clientRepository.findClientByEmail(email);
             if (clientOptional.isPresent()) {
                 throw new IllegalStateException("Email registered");
@@ -82,6 +104,7 @@ public class ClientServiceImpl implements ClientService {
     }
 
     @Override
+    @Transactional
     public void deleteClient(Long clientId) {
         boolean exists = clientRepository.existsById(clientId);
         if (!exists) {

@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service;
 
+import us.telran.pawnshop.dto.ManagerCreationRequest;
 import us.telran.pawnshop.entity.Manager;
 
 import java.util.List;
@@ -8,7 +9,7 @@ public interface ManagerService {
 
     List<Manager> getAppraisers();
 
-    void addNewManager(Manager manager);
+    void addNewManager(ManagerCreationRequest managerCreationRequest);
 
     void deleteManager(Long managerId);
 

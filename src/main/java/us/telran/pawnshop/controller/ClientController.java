@@ -3,6 +3,7 @@ package us.telran.pawnshop.controller;
 import lombok.RequiredArgsConstructor;
 
 import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.dto.ClientCreationRequest;
 import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.service.ClientService;
 
@@ -17,8 +18,8 @@ public class ClientController {
     private final ClientService clientService;
 
     @PostMapping(value = "new")
-    public void createNewClient(@RequestBody Client client) {
-        clientService.addNewClient(client);
+    public void createNewClient(@RequestBody ClientCreationRequest clientCreationRequest) {
+        clientService.addNewClient(clientCreationRequest);
     }
 
     @GetMapping

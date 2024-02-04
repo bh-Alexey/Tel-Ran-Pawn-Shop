@@ -46,8 +46,5 @@ public class ProductServiceImpl implements ProductService {
             product.setStatus(productStatus);
         }
 
-        if (interestRate != 0 && !Objects.equals(product.getInterestRate(), interestRate)) {
-            product.setInterestRate(interestRate);
-        }
     }
 }

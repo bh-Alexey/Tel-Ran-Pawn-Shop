@@ -3,6 +3,7 @@ package us.telran.pawnshop.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import us.telran.pawnshop.dto.PreciousMetalPriceCreationRequest;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.repository.PledgeCategoryRepository;
@@ -18,23 +19,24 @@ import java.util.Optional;
 public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService {
 
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
-
     private final PledgeCategoryRepository pledgeCategoryRepository;
-
 
     @Override
     @Transactional
-    public void addNewPrice(Long categoryId, MetalPurity purity, BigDecimal metalPrice) {
+    public void addNewPrice(PreciousMetalPriceCreationRequest preciousMetalPriceCreationRequest) {
 
-        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository.findByPurity(purity);
+        Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository
+                .findByPurity(preciousMetalPriceCreationRequest.getPurity());
         if (preciousMetalPriceOptional.isPresent()) {
-            throw new IllegalStateException("Price for this purity " + purity + " already presented");
+            throw new IllegalStateException("Price for this purity " + preciousMetalPriceCreationRequest.getPurity()
+                                            + " already presented");
         }
         else {
             PreciousMetalPrice newPrice = new PreciousMetalPrice();
-            newPrice.setCategory(pledgeCategoryRepository.getReferenceById(categoryId));
-            newPrice.setPurity(purity);
-            newPrice.setMetalPrice(metalPrice);
+            newPrice.setCategory(pledgeCategoryRepository
+                    .getReferenceById(preciousMetalPriceCreationRequest.getCategoryId()));
+            newPrice.setPurity(preciousMetalPriceCreationRequest.getPurity());
+            newPrice.setMetalPrice(preciousMetalPriceCreationRequest.getMetalPrice());
             preciousMetalPriceRepository.save(newPrice);
         }
     }
@@ -53,6 +55,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
     }
 
     @Override
+    @Transactional
     public void deleteMetalPrice(Long priceId) {
         boolean exists = preciousMetalPriceRepository.existsById(priceId);
         if (!exists) {

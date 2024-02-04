@@ -6,6 +6,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import us.telran.pawnshop.entity.enums.CreditStatus;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import static jakarta.persistence.CascadeType.*;
@@ -32,14 +33,14 @@ public class Credit {
     private Pledge pledge;
 
     @Column(name = "credit_amount")
-    private double creditAmount;
+    private BigDecimal creditAmount;
 
     @Column(name = "term")
     @Enumerated(STRING)
     private CreditTerm term;
 
     @Column(name = "ransom_amount")
-    private double ransomAmount;
+    private BigDecimal ransomAmount;
 
     @Column(name = "created_at")
     private Timestamp createdAt;

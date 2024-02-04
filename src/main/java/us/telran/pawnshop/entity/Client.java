@@ -34,6 +34,7 @@ public class Client {
             strategy = SEQUENCE,
             generator = "client_sequence"
     )
+    @Column(name = "client_id", nullable = false, updatable = false)
     private Long clientId;
 
     @Column(name = "status")
@@ -65,21 +66,6 @@ public class Client {
     @LastModifiedDate
     @Column(name = "updated_at")
     private Timestamp updatedAt;
-
-    public Client(ClientStatus status,
-                  LocalDate dateOfBirth,
-                  String firstName,
-                  String lastName,
-                  String email,
-                  String address
-    ) {
-        this.status = status;
-        this.dateOfBirth = dateOfBirth;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.address = address;
-    }
 
     @PrePersist
     public void generateSocialSecurityNumber() {

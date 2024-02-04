@@ -2,6 +2,7 @@ package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.dto.PreciousMetalPriceCreationRequest;
 import us.telran.pawnshop.entity.PreciousMetalPrice;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.service.PreciousMetalPriceService;
@@ -17,10 +18,8 @@ public class PreciousMetalPriceController {
     private final PreciousMetalPriceService preciousMetalPriceService;
 
     @PostMapping(value = "add")
-    public void addNewPrice(@RequestParam Long categoryId,
-                            @RequestParam MetalPurity purity,
-                            @RequestParam BigDecimal metalPrice) {
-        preciousMetalPriceService.addNewPrice(categoryId, purity, metalPrice);
+    public void addNewPrice(@RequestBody PreciousMetalPriceCreationRequest preciousMetalPriceCreationRequest) {
+        preciousMetalPriceService.addNewPrice(preciousMetalPriceCreationRequest);
     }
 
     @GetMapping(value = "show")

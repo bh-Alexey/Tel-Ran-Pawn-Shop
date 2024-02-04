@@ -31,6 +31,10 @@ public class Pledge {
     private Long pledgeId;
 
     @ManyToOne(cascade = ALL)
+    @JoinColumn(name = "product_id")
+    private Product product;
+
+    @ManyToOne(cascade = ALL)
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
@@ -46,6 +50,12 @@ public class Pledge {
     @Enumerated(STRING)
     private ItemType item;
 
+    @Column(name = "description")
+    private String description;
+
+    @Column(name = "quantity")
+    private int itemQuantity;
+
     @Column(name = "stamp")
     @Enumerated(STRING)
     private MetalPurity purity;
@@ -58,9 +68,6 @@ public class Pledge {
 
     @Column(name = "price")
     private BigDecimal estimatedPrice;
-
-    @Column(name = "description")
-    private String description;
 
     @Column(name = "status")
     @Enumerated(STRING)

@@ -24,6 +24,8 @@ public class PledgeServiceImpl implements PledgeService {
     private final PledgeCategoryRepository pledgeCategoryRepository;
     private final ManagerRepository managerRepository;
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
+    private final ProductRepository productRepository;
+
 
     @Override
     @Transactional
@@ -31,8 +33,11 @@ public class PledgeServiceImpl implements PledgeService {
         Client client = clientRepository.findById(pledgeCreationRequest.getClientId())
                 .orElseThrow(() -> new IllegalStateException("Client not found"));
 
+        Product product = productRepository.findById(pledgeCreationRequest.getProductId())
+                .orElseThrow(() -> new IllegalStateException("Product with id " + pledgeCreationRequest.getProductId() + " not found"));
+
         PledgeCategory category = pledgeCategoryRepository.findById(pledgeCreationRequest.getCategoryId())
-                .orElseThrow(() -> new IllegalStateException("Category not identify"));
+                .orElseThrow(() -> new IllegalStateException("Category not identified"));
 
         Manager manager = managerRepository.findById(pledgeCreationRequest.getManagerId())
                 .orElseThrow(() -> new IllegalStateException("Manager not have been chosen"));
@@ -42,15 +47,18 @@ public class PledgeServiceImpl implements PledgeService {
 
         Pledge pledge = new Pledge();
         pledge.setClient(client);
+        pledge.setProduct(product);
         pledge.setCategory(category);
         pledge.setManager(manager);
         pledge.setItem(pledgeCreationRequest.getItem());
+        pledge.setItemQuantity(pledgeCreationRequest.getItemQuantity());
         pledge.setDescription(pledgeCreationRequest.getDescription());
         pledge.setPurity(pledgeCreationRequest.getPurity());
         pledge.setWeightGross(pledgeCreationRequest.getWeightGross());
         pledge.setWeightNet(pledgeCreationRequest.getWeightNet());
         pledge.setEstimatedPrice(pledge.getWeightNet().multiply(metalPrice.getMetalPrice()));
         pledge.setStatus(PledgeStatus.PLEDGED);
+
         pledgeRepository.save(pledge);
     }
 
@@ -61,11 +69,13 @@ public class PledgeServiceImpl implements PledgeService {
 
     @Override
     @Transactional
-    public void updatePledge(Long pledgeId, String description, PledgeStatus status) {
+    public void updatePledge(Long pledgeId, String description, PledgeStatus status, int itemQuantity) {
         Pledge pledge = pledgeRepository.findById(pledgeId)
                 .orElseThrow(() -> new IllegalStateException("Client with id " + pledgeId + " doesn't exist"));
 
+
         pledge.setDescription(description);
+        pledge.setItemQuantity(itemQuantity);
 
         if (!Objects.equals(pledge.getStatus(), status)) {
             throw new IllegalStateException("Pledge in status " + status + ". Up to date");

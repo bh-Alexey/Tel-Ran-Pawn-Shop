@@ -42,9 +42,4 @@ public class PreciousMetalPrice {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    public PreciousMetalPrice(PledgeCategory category, MetalPurity purity, BigDecimal metalPrice) {
-        this.category = category;
-        this.purity = purity;
-        this.metalPrice = metalPrice;
-    }
 }

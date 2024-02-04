@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import us.telran.pawnshop.entity.enums.ProductName;
 import us.telran.pawnshop.entity.enums.ProductStatus;
 
+import java.math.BigDecimal;
 import java.sql.Timestamp;
 
 import static jakarta.persistence.EnumType.*;
@@ -32,7 +33,7 @@ public class Product {
     private ProductStatus status;
 
     @Column(name = "rate")
-    private double interestRate;
+    private BigDecimal interestRate;
 
     @CreatedDate
     @Column(name = "created_at")
