@@ -23,9 +23,7 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void addNewClient(ClientCreationRequest clientCreationRequest) {
-        if (!clientCreationRequest.isValid()) {
-            throw new IllegalArgumentException("Invalid client creation request");
-        }
+
         Optional<Client> clientOptional = clientRepository
                 .findClientByEmail(clientCreationRequest.getEmail());
         if (clientOptional.isPresent()) {
@@ -60,13 +58,11 @@ public class ClientServiceImpl implements ClientService {
         client.setAddress(clientCreationRequest.getAddress());
         client.setStatus(ClientStatus.REGULAR);
         clientRepository.save(client);
-    }
 
+    }
 
     @Override
-    public List<Client> getClients() {
-        return clientRepository.findAll();
-    }
+    public List<Client> getClients() { return clientRepository.findAll(); }
 
     @Override
     @Transactional
@@ -75,7 +71,8 @@ public class ClientServiceImpl implements ClientService {
                              String lastName,
                              LocalDate dateOfBirth,
                              String email,
-                             String address) {
+                             String address
+    ) {
         Client client = clientRepository.findById(clientId)
                 .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
 
@@ -99,8 +96,15 @@ public class ClientServiceImpl implements ClientService {
             }
             client.setEmail(email);
         }
+        if (dateOfBirth != null && !Objects.equals(client.getDateOfBirth(), dateOfBirth)) {
+            client.setDateOfBirth(dateOfBirth);
+        }
         client.setDateOfBirth(dateOfBirth);
-        client.setAddress(address);
+
+        if (address != null && !address.isEmpty()
+                && !Objects.equals(client.getAddress(), address)) {
+            client.setAddress(address);
+        }
     }
 
     @Override

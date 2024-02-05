@@ -5,6 +5,7 @@ import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.dto.CreditCreationRequest;
 import us.telran.pawnshop.entity.Credit;
 import us.telran.pawnshop.entity.enums.CreditStatus;
+import us.telran.pawnshop.entity.enums.CreditTerm;
 import us.telran.pawnshop.service.CreditService;
 
 import java.math.BigDecimal;
@@ -37,7 +38,7 @@ public class CreditController {
             @PathVariable("creditId") Long creditId,
             @RequestParam(required = false) BigDecimal creditAmount,
             @RequestParam(required = false) BigDecimal ransomAmount,
-            @RequestParam(required = false) Credit.CreditTerm term,
+            @RequestParam(required = false) CreditTerm term,
             @RequestParam(required = false) CreditStatus status) {
         creditService.updateCredit(creditId, creditAmount, ransomAmount, term, status);
     }

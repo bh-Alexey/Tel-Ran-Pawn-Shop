@@ -3,11 +3,13 @@ package us.telran.pawnshop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import us.telran.pawnshop.dto.ProductCreationRequest;
 import us.telran.pawnshop.entity.Product;
 import us.telran.pawnshop.entity.enums.ProductName;
 import us.telran.pawnshop.entity.enums.ProductStatus;
 import us.telran.pawnshop.service.ProductService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @RestController
@@ -18,8 +20,8 @@ public class ProductController {
     private final ProductService productService;
 
     @PostMapping(value = "add")
-    public void createNewProduct(@RequestBody Product product) {
-        productService.addNewProduct(product);
+    public void createNewProduct(@RequestBody ProductCreationRequest productCreationRequest) {
+        productService.addNewProduct(productCreationRequest);
     }
 
     @GetMapping
@@ -36,7 +38,8 @@ public class ProductController {
     public void updateProductById(@PathVariable("productId") Long productId,
                            @RequestParam(required = false) ProductName productName,
                            @RequestParam(required = false) ProductStatus productStatus,
-                           @RequestParam(required = false) double interestRate) {
+                           @RequestParam(required = false) BigDecimal interestRate) {
+
             productService.updateProduct(productId, productName, productStatus, interestRate);
     }
 }
