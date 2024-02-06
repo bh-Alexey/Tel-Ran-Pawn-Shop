@@ -32,8 +32,7 @@ public class CreditServiceImpl implements CreditService {
                 .orElseThrow(() -> new IllegalStateException("Pledge not found"));
 
 
-        Percentage percentage = percentageRepository.findByTerm(creditCreationRequest.getTerm())
-                .orElseThrow();
+        Percentage percentage = percentageRepository.findByTerm(creditCreationRequest.getTerm()).get();
 
         Credit credit = new Credit();
         credit.setPledge(pledge);
@@ -53,7 +52,12 @@ public class CreditServiceImpl implements CreditService {
 
     @Override
     @Transactional
-    public void updateCredit(Long creditId, BigDecimal creditAmount, BigDecimal ransomAmount, CreditTerm term, CreditStatus status) {
+    public void updateCredit(Long creditId,
+                             BigDecimal creditAmount,
+                             BigDecimal ransomAmount,
+                             CreditTerm term,
+                             CreditStatus status
+    ) {
         Credit credit = creditRepository.findById(creditId)
                 .orElseThrow(() -> new IllegalStateException("Credit with id " + creditId + " doesn't exist"));
 
