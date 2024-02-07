@@ -19,7 +19,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
-public class CashOrder {
+public class CreditOrder {
 
     @Id
     @SequenceGenerator(
@@ -46,4 +46,5 @@ public class CashOrder {
     @CreatedDate
     @Column(name = "created_at")
     private Timestamp createdAt;
+
 }

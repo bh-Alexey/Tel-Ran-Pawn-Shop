@@ -18,12 +18,12 @@ import static jakarta.persistence.GenerationType.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "bank")
-public class Bank {
+@Table(name = "pawn-branch")
+public class PawnBranch {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long bankId;
+    private Long branchId;
 
     @Column(name = "balance")
     private BigDecimal balance;

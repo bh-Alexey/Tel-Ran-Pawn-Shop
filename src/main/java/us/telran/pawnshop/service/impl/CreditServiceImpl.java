@@ -10,7 +10,6 @@ import us.telran.pawnshop.entity.enums.CreditTerm;
 import us.telran.pawnshop.repository.CreditRepository;
 import us.telran.pawnshop.repository.PercentageRepository;
 import us.telran.pawnshop.repository.PledgeRepository;
-import us.telran.pawnshop.repository.ProductRepository;
 import us.telran.pawnshop.service.CreditService;
 
 import java.math.BigDecimal;
@@ -34,9 +33,16 @@ public class CreditServiceImpl implements CreditService {
 
         Percentage percentage = percentageRepository.findByTerm(creditCreationRequest.getTerm()).get();
 
+
         Credit credit = new Credit();
         credit.setPledge(pledge);
-        credit.setCreditAmount(creditCreationRequest.getCreditAmount());
+
+        if (creditCreationRequest.getCreditAmount().compareTo(pledge.getEstimatedPrice()) > 0) {
+            throw new IllegalStateException();
+        } else {
+            credit.setCreditAmount(creditCreationRequest.getCreditAmount());
+        }
+
         credit.setTerm(creditCreationRequest.getTerm());
         credit.setRansomAmount(credit.getCreditAmount().multiply(percentage.getInterest())
                 .add(credit.getCreditAmount()));

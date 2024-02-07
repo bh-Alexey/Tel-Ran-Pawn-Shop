@@ -1,17 +1,17 @@
 package us.telran.pawnshop.service;
 
-import us.telran.pawnshop.entity.Bank;
+import us.telran.pawnshop.entity.PawnBranch;
 
 import java.util.List;
 
-public interface BankService {
+public interface PawnBranchService {
 
 
-    void addBank(String address);
-
-    List<Bank> getBanks();
+    void addBranch(String address);
 
     void updateBranch(Long bankId, String address);
 
     void deleteBranch(Long bankId);
+
+    List<PawnBranch> getBranches();
 }
