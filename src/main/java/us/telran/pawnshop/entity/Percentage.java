@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.Data;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import us.telran.pawnshop.entity.enums.CreditTerm;
+import us.telran.pawnshop.entity.enums.LoanTerm;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -24,7 +24,7 @@ public class Percentage {
 
     @Column(name = "period", nullable = false)
     @Enumerated(STRING)
-    private CreditTerm term;
+    private LoanTerm term;
 
     @Column(name = "interest")
     private BigDecimal interest;

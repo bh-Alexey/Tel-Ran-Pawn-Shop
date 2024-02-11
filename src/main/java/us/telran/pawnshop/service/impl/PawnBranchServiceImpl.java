@@ -38,7 +38,7 @@ public class PawnBranchServiceImpl implements PawnBranchService {
             pawnBranchRepository.save(bank);
         }
         else {
-            throw new NoSuchElementException("Bank not found");
+            throw new NoSuchElementException("Pawn shop not found");
         }
 
     }
@@ -52,7 +52,7 @@ public class PawnBranchServiceImpl implements PawnBranchService {
             pawnBranchRepository.delete(bank);
         }
         else {
-            throw new NoSuchElementException("Bank not found");
+            throw new NoSuchElementException("Pawn shop not found");
         }
         pawnBranchRepository.deleteById(categoryId);
     }

@@ -1,21 +1,19 @@
 package us.telran.pawnshop.entity.enums;
 
-import lombok.Data;
 
+import lombok.Getter;
 
-public enum CreditTerm {
+@Getter
+public enum LoanTerm {
     WEEK(7),
     TWO_WEEKS(2 * WEEK.getDays()),
     THREE_WEEKS(3 * WEEK.getDays()),
-    MONTH(4 * WEEK.getDays());
+    MONTH(30);
 
     private final int days;
 
-    CreditTerm(int days) {
+    LoanTerm(int days) {
         this.days = days;
     }
 
-    public int getDays() {
-        return days;
-    }
 }

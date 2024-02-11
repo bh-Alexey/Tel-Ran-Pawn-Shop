@@ -7,8 +7,8 @@ import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import us.telran.pawnshop.entity.enums.CreditStatus;
-import us.telran.pawnshop.entity.enums.CreditTerm;
+import us.telran.pawnshop.entity.enums.LoanStatus;
+import us.telran.pawnshop.entity.enums.LoanTerm;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
@@ -22,23 +22,23 @@ import static jakarta.persistence.GenerationType.*;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Table(name = "credits")
-public class Credit {
+@Table(name = "loans")
+public class Loan {
 
     @Id
     @GeneratedValue(strategy = IDENTITY)
-    private Long creditId;
+    private Long loanId;
 
     @OneToOne(cascade = ALL)
     @JoinColumn(name = "pledge_id")
     private Pledge pledge;
 
-    @Column(name = "credit_amount")
-    private BigDecimal creditAmount;
+    @Column(name = "loan_amount")
+    private BigDecimal loanAmount;
 
     @Column(name = "term")
     @Enumerated(STRING)
-    private CreditTerm term;
+    private LoanTerm term;
 
     @Column(name = "ransom_amount")
     private BigDecimal ransomAmount;
@@ -51,7 +51,7 @@ public class Credit {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "credit_status")
+    @Column(name = "loan_status")
     @Enumerated(STRING)
-    private CreditStatus status;
+    private LoanStatus status;
 }

@@ -1,6 +1,6 @@
 package us.telran.pawnshop.entity.enums;
 
-public enum CreditStatus {
+public enum LoanStatus {
     IN_USE,
     EXPIRED,
     PAID

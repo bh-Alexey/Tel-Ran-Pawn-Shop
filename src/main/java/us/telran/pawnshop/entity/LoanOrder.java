@@ -19,7 +19,7 @@ import static jakarta.persistence.GenerationType.SEQUENCE;
 @NoArgsConstructor
 @AllArgsConstructor
 @Table(name = "orders")
-public class CreditOrder {
+public class LoanOrder {
 
     @Id
     @SequenceGenerator(
@@ -37,8 +37,8 @@ public class CreditOrder {
     private OrderType orderType;
 
     @ManyToOne
-    @JoinColumn(name = "credit_id")
-    private Credit creditId;
+    @JoinColumn(name = "loan_id")
+    private Loan loanId;
 
     @Column(name = "amount")
     private BigDecimal operationAmount;

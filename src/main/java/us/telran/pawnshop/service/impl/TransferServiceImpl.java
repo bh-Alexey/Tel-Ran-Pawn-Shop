@@ -24,7 +24,7 @@ public class TransferServiceImpl implements TransferService {
             PawnBranch fromBranch = pawnBranchRepository.findById(transferRequest.getFromBranchId())
                     .orElseThrow(() -> new RuntimeException("Branch sender not found"));
             PawnBranch toBranch = pawnBranchRepository.findById(transferRequest.getToBranchId())
-                    .orElseThrow(() -> new RuntimeException("Branch receiver not found "));
+                    .orElseThrow(() -> new RuntimeException("Branch recipient not found "));
 
             if (fromBranch.getBalance().compareTo(transferRequest.getTransferAmount()) < 0) {
                 throw new RuntimeException("No enough money for the transfer ");
