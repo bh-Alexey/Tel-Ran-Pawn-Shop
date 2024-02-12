@@ -28,6 +28,9 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
     }
 
+    void getRansomAmount() {
+
+    }
     @Override
     public void createLoanReceiptOrder(LoanOrderRequest loanOrderRequest) {
 
@@ -45,7 +48,6 @@ public class LoanOrderServiceImpl implements LoanOrderService {
             loanOrder.setLoanId(loan);
         }
 
-        loanOrder.setOperationAmount(loanOrderRequest.getLoanAmount());
 
     }
 

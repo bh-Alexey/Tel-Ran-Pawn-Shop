@@ -43,9 +43,11 @@ public class CashOperation {
     @Column(name = "amount")
     private BigDecimal operationAmount;
 
+    @Column(name = "description")
+    private String description;
+
     @CreatedDate
     @Column(name = "created_at")
     private Timestamp createdAt;
-
 
 }

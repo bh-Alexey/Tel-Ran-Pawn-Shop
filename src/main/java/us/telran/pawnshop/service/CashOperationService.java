@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service;
 
+import us.telran.pawnshop.dto.CashOperationRequest;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.CashOperation;
 
@@ -12,5 +13,9 @@ public interface CashOperationService {
     void collectCashToBranch(TransferRequest transferRequest);
 
     void replenishCashFromBranch(TransferRequest transferRequest);
+
+    void replenishCash(CashOperationRequest cashOperationRequest);
+
+    void collectCash(CashOperationRequest cashOperationRequest);
 
 }

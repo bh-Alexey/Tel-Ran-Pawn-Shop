@@ -14,5 +14,7 @@ public class CashOperationRequest {
 
     private BigDecimal operationAmount;
 
+    private String description;
+
 }
 
