@@ -1,6 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.dto.PercentageCreationRequest;
@@ -21,16 +22,20 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class PercentageServiceImpl implements PercentageService {
 
-
-
-
     private final PercentageRepository percentageRepository;
     private final ProductRepository productRepository;
 
-    private final static String PRODUCT = "BORROW";
-    private final static BigDecimal COEFFICIENT_CHANGE = new BigDecimal("0.00783");
-    private final static BigDecimal DAYS_IN_MONTH = new BigDecimal("30");
-    private final static int DIVISION_SCALE = 8;
+    @Value("${pawnshop.product}")
+    private String productName;
+
+    @Value("${pawnshop.coefficient.change}")
+    private static BigDecimal coefficientChange;
+
+    @Value("${pawnshop.days.in.month}")
+    private static BigDecimal daysInMonth;
+
+    @Value("${pawnshop.division.scale}")
+    private static int divisionScale;
 
     @Override
     @Transactional
@@ -41,7 +46,7 @@ public class PercentageServiceImpl implements PercentageService {
                     throw new IllegalStateException("interests for this term introduced");
                 });
 
-        Product product = productRepository.findByProductName(ProductName.valueOf(PRODUCT))
+        Product product = productRepository.findByProductName(ProductName.valueOf(productName))
                 .orElseThrow(() -> new IllegalStateException("Product not found"));
 
         BigDecimal baseInterestRate = product.getInterestRate();
@@ -56,11 +61,11 @@ public class PercentageServiceImpl implements PercentageService {
         BigDecimal periodDays = new BigDecimal(period);
 
         BigDecimal dailyRateForMonth = baseInterestRate
-                .divide(DAYS_IN_MONTH, DIVISION_SCALE, RoundingMode.HALF_UP);
-        BigDecimal dailyInterest = dailyRateForMonth.add(COEFFICIENT_CHANGE
-                .multiply(periodDays.subtract(DAYS_IN_MONTH)));
+                .divide(daysInMonth, divisionScale, RoundingMode.HALF_UP);
+        BigDecimal dailyInterest = dailyRateForMonth.add(coefficientChange
+                .multiply(periodDays.subtract(daysInMonth)));
 
-        return dailyInterest.setScale(DIVISION_SCALE, RoundingMode.HALF_UP);
+        return dailyInterest.setScale(divisionScale, RoundingMode.HALF_UP);
     }
 
     private Percentage createNewPercentage(LoanTerm term, BigDecimal interest){

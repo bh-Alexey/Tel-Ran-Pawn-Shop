@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 public class LoanOrderRequest {
 
     private Long loanId;
-    private BigDecimal loanAmount;
-
+    private BigDecimal orderAmount;
 
 }

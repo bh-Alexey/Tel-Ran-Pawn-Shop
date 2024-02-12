@@ -9,7 +9,6 @@ import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.repository.*;
 import us.telran.pawnshop.service.PledgeService;
 
-import java.math.BigDecimal;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -71,7 +70,7 @@ public class PledgeServiceImpl implements PledgeService {
     @Transactional
     public void updatePledge(Long pledgeId, String description, PledgeStatus status, int itemQuantity) {
         Pledge pledge = pledgeRepository.findById(pledgeId)
-                .orElseThrow(() -> new IllegalStateException("Client with id " + pledgeId + " doesn't exist"));
+                .orElseThrow(() -> new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist"));
 
 
         pledge.setDescription(description);
@@ -90,6 +89,16 @@ public class PledgeServiceImpl implements PledgeService {
             throw new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist");
         }
         pledgeRepository.deleteById(pledgeId);
+    }
+    @Override
+    public Pledge findPledgeById(Long pledgeId) {
+        Optional<Pledge> pledgeOptional = pledgeRepository.findById(pledgeId);
+        if (pledgeOptional.isPresent()) {
+            return pledgeOptional.get();
+        }
+        else {
+            throw new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist");
+        }
     }
 }
 

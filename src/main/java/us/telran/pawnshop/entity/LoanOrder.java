@@ -38,7 +38,7 @@ public class LoanOrder {
 
     @ManyToOne
     @JoinColumn(name = "loan_id")
-    private Loan loanId;
+    private Loan loan;
 
     @Column(name = "amount")
     private BigDecimal operationAmount;

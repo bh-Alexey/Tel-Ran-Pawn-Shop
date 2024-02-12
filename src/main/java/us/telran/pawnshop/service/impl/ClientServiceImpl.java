@@ -24,41 +24,43 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void addNewClient(ClientCreationRequest clientCreationRequest) {
 
-        Optional<Client> clientOptional = clientRepository
-                .findClientByEmail(clientCreationRequest.getEmail());
-        if (clientOptional.isPresent()) {
-            throw new IllegalStateException("Email registered, client might be exist");
+        Client existClient = findClientByEmail(clientCreationRequest.getEmail());
+        if (existClient != null) {
+            throw new IllegalStateException("Email registered for client with id " 
+                    + existClient.getClientId());
         }
-
-        Client client = new Client();
-        client.setFirstName(clientCreationRequest.getFirstName());
-        client.setLastName(clientCreationRequest.getLastName());
-        client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
-        client.setSocialSecurityNumber(clientCreationRequest.getSocialSecurityNumber());
-        client.setEmail(clientCreationRequest.getEmail());
-        client.setAddress(clientCreationRequest.getAddress());
-        client.setStatus(ClientStatus.REGULAR);
-        clientRepository.save(client);
+        else {
+            Client client = new Client();
+            client.setFirstName(clientCreationRequest.getFirstName());
+            client.setLastName(clientCreationRequest.getLastName());
+            client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
+            client.generateSocialSecurityNumber();
+            client.setEmail(clientCreationRequest.getEmail());
+            client.setAddress(clientCreationRequest.getAddress());
+            client.setStatus(ClientStatus.REGULAR);
+            clientRepository.save(client);
+        }
     }
 
     @Override
     @Transactional
     public void addNewClientReal(ClientCreationRequest clientCreationRequest) {
-        Optional<Client> clientOptional = clientRepository
-                .findClientBySsn(clientCreationRequest.getSocialSecurityNumber());
-        if (clientOptional.isPresent()) {
-            throw new IllegalStateException("Client registered");
+        Client existClient = findClientBySsn(clientCreationRequest.getSocialSecurityNumber());
+        if (existClient != null) {
+            throw new IllegalStateException("Client registered with id "
+                    + existClient.getClientId());
         }
-        Client client = new Client();
-        client.setFirstName(clientCreationRequest.getFirstName());
-        client.setLastName(clientCreationRequest.getLastName());
-        client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
-        client.generateSocialSecurityNumber();
-        client.setEmail(clientCreationRequest.getEmail());
-        client.setAddress(clientCreationRequest.getAddress());
-        client.setStatus(ClientStatus.REGULAR);
-        clientRepository.save(client);
-
+        else {
+            Client client = new Client();
+            client.setFirstName(clientCreationRequest.getFirstName());
+            client.setLastName(clientCreationRequest.getLastName());
+            client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
+            client.setSocialSecurityNumber(clientCreationRequest.getSocialSecurityNumber());
+            client.setEmail(clientCreationRequest.getEmail());
+            client.setAddress(clientCreationRequest.getAddress());
+            client.setStatus(ClientStatus.REGULAR);
+            clientRepository.save(client);
+        }
     }
 
     @Override
@@ -73,8 +75,7 @@ public class ClientServiceImpl implements ClientService {
                              String email,
                              String address
     ) {
-        Client client = clientRepository.findById(clientId)
-                .orElseThrow(() -> new IllegalStateException("Client with id " + clientId + " doesn't exist"));
+        Client client = getClientById(clientId);
 
         if (firstName != null
                    && !firstName.isEmpty()
@@ -115,5 +116,39 @@ public class ClientServiceImpl implements ClientService {
             throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
         }
         clientRepository.deleteById(clientId);
+    }
+
+    @Override
+    public Client getClientById(Long clientId) {
+        Optional<Client> clientOptional = clientRepository.findById(clientId);
+        if (clientOptional.isPresent()) {
+            return clientOptional.get();
+        }
+        else {
+            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
+        }
+    }
+
+    @Override
+    public Client findClientBySsn(int ssn) {
+        Optional<Client> clientOptional = clientRepository
+                .findClientBySsn(ssn);
+        if (clientOptional.isPresent()) {
+            return clientOptional.get();
+        }
+        else {
+            throw new IllegalStateException("Client with ssn " + ssn + " doesn't exist");
+        }
+    }
+    
+    public Client findClientByEmail(String email) {
+        Optional<Client> clientOptional = clientRepository
+                .findClientByEmail(email);
+        if (clientOptional.isPresent()) {
+            return clientOptional.get();
+        }
+        else {
+            throw new IllegalStateException("Client with email " + email + " doesn't exist");
+        }
     }
 }

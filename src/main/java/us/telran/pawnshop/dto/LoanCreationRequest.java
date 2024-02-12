@@ -12,5 +12,4 @@ public class LoanCreationRequest {
     private Long pledgeId;
     private BigDecimal creditAmount;
     private LoanTerm term;
-    private LoanStatus status;
 }

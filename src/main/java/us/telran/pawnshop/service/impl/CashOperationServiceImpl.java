@@ -21,6 +21,7 @@ public class CashOperationServiceImpl implements CashOperationService {
 
     private final CashOperationRepository cashOperationRepository;
     private final PawnBranchRepository pawnBranchRepository;
+
     @Override
     public List<CashOperation> getOperations() {
         return cashOperationRepository.findAll();
@@ -96,5 +97,7 @@ public class CashOperationServiceImpl implements CashOperationService {
         cashOperation.setDescription("Replenish cash for Region Director");
         cashOperationRepository.save(cashOperation);
     }
+
+
 
 }

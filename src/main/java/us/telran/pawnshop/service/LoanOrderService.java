@@ -8,8 +8,6 @@ import java.util.List;
 
 public interface LoanOrderService {
 
-    @Transactional
-    void createLoanReceiptOrder();
 
     void createLoanReceiptOrder(LoanOrderRequest loanOrderRequest);
 
@@ -17,7 +15,6 @@ public interface LoanOrderService {
 
     void createLoanProlongationOrder(LoanOrderRequest loanOrderRequest);
 
-    List<LoanOrder> getLoanOrders();
-
+    List<LoanOrder> getAllLoanOrders();
 
 }

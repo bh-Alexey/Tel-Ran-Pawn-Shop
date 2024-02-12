@@ -2,6 +2,7 @@ package us.telran.pawnshop.service.impl;
 
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import us.telran.pawnshop.dto.LoanCreationRequest;
 import us.telran.pawnshop.entity.*;
@@ -25,8 +26,11 @@ public class LoanServiceImpl implements LoanService {
     private final PledgeRepository pledgeRepository;
     private final PercentageRepository percentageRepository;
 
-    public final static BigDecimal HUNDRED_PERCENTS = new BigDecimal("100");
-    private final static int DIVISION_SCALE = 8;
+    @Value("${pawnshop.hundred.percents}")
+    private static BigDecimal hundred;
+
+    @Value("${pawnshop.division.scale}")
+    private static int divisionScale;
 
     @Override
     @Transactional
@@ -51,7 +55,7 @@ public class LoanServiceImpl implements LoanService {
         if (percentageOptional.isPresent()) {
             Percentage percentage = percentageOptional.get();
             loan.setRansomAmount(loan.getLoanAmount().multiply(BigDecimal.ONE
-                    .add((percentage.getInterest().divide(HUNDRED_PERCENTS, DIVISION_SCALE, RoundingMode.HALF_UP))
+                    .add((percentage.getInterest().divide(hundred, divisionScale, RoundingMode.HALF_UP))
                             .multiply(BigDecimal.valueOf(loan.getTerm().getDays())))));
         }
 
@@ -61,20 +65,33 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    public List<Loan> getCredits() {
+    public List<Loan> getAllLoans() {
         return loanRepository.findAll();
     }
 
     @Override
+    public Loan getLoanById(Long loanId) {
+        Optional<Loan> loanOptional = loanRepository.findById(loanId);
+        if (loanOptional.isPresent()) {
+            return loanOptional.get();
+        }
+        else {
+            throw new IllegalStateException("Loan with id " + loanId + " doesn't exist");
+        }
+    }
+
+
+
+    @Override
     @Transactional
-    public void updateCredit(Long creditId,
+    public void updateCredit(Long loanId,
                              BigDecimal loanAmount,
                              BigDecimal ransomAmount,
                              LoanTerm term,
                              LoanStatus status
     ) {
-        Loan loan = loanRepository.findById(creditId)
-                .orElseThrow(() -> new IllegalStateException("Credit with id " + creditId + " doesn't exist"));
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new IllegalStateException("Credit with id " + loanId + " doesn't exist"));
 
         loan.setLoanAmount(loanAmount);
         loan.setRansomAmount(ransomAmount);
@@ -84,18 +101,18 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     @Transactional
-    public void updateCreditStatus(Long creditId, LoanStatus status) {
-        Loan loan = loanRepository.findById(creditId)
-                .orElseThrow(() -> new IllegalStateException("Credit with id " + creditId + " doesn't exist"));
+    public void updateCreditStatus(Long loanId, LoanStatus status) {
+        Loan loan = loanRepository.findById(loanId)
+                .orElseThrow(() -> new IllegalStateException("Credit with id " + loanId + " doesn't exist"));
         loan.setStatus(status);
     }
 
     @Override
-    public void deleteCredit(Long creditId) {
-        boolean exists = loanRepository.existsById(creditId);
+    public void deleteCredit(Long loanId) {
+        boolean exists = loanRepository.existsById(loanId);
         if (!exists) {
-            throw new IllegalStateException("Pledge with id " + creditId + " doesn't exist");
+            throw new IllegalStateException("Pledge with id " + loanId + " doesn't exist");
         }
-        loanRepository.deleteById(creditId);
+        loanRepository.deleteById(loanId);
     }
 }

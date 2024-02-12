@@ -16,4 +16,5 @@ public interface PledgeService {
 
     void deletePledge(Long pledgeId);
 
+    Pledge findPledgeById(Long pledgeId);
 }

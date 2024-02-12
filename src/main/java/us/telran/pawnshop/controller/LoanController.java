@@ -25,7 +25,7 @@ public class LoanController {
 
     @GetMapping
     public List<Loan> getClients() {
-        return loanService.getCredits();
+        return loanService.getAllLoans();
     }
 
     @DeleteMapping(path = "remove/{loanId}")

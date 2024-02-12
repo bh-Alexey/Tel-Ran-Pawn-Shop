@@ -13,7 +13,9 @@ public interface LoanService {
 
     void newCredit(LoanCreationRequest loanCreationRequest);
 
-    List<Loan> getCredits();
+    List<Loan> getAllLoans();
+
+    Loan getLoanById(Long loanId);
 
     void updateCredit(Long creditId, BigDecimal creditAmount, BigDecimal ransomAmount, LoanTerm term, LoanStatus status);
 
