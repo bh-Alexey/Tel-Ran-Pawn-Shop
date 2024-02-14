@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface ProductRepository extends JpaRepository<Product, Long> {
 
     @Query("SELECT pr FROM Product pr WHERE pr.productName = ?1")
-    Optional<Product> findByProductName(ProductName productName);
+    Optional<Product> findByProductName(String productName);
 }

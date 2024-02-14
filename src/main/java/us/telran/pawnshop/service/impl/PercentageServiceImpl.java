@@ -46,7 +46,7 @@ public class PercentageServiceImpl implements PercentageService {
                     throw new IllegalStateException("interests for this term introduced");
                 });
 
-        Product product = productRepository.findByProductName(ProductName.valueOf(productName))
+        Product product = productRepository.findByProductName(productName)
                 .orElseThrow(() -> new IllegalStateException("Product not found"));
 
         BigDecimal baseInterestRate = product.getInterestRate();

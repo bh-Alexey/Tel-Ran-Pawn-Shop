@@ -46,7 +46,7 @@ public class ProductServiceImpl implements ProductService {
     @Override
     @Transactional
     public void updateProduct(Long productId,
-                              ProductName productName,
+                              String productName,
                               ProductStatus productStatus,
                               BigDecimal interestRate
     ) {

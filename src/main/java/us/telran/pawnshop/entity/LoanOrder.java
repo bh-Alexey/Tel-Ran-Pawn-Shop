@@ -41,7 +41,7 @@ public class LoanOrder {
     private Loan loan;
 
     @Column(name = "amount")
-    private BigDecimal operationAmount;
+    private BigDecimal orderAmount;
 
     @CreatedDate
     @Column(name = "created_at")

@@ -9,12 +9,7 @@ import java.math.BigDecimal;
 public class CashOperationRequest {
 
     private Long branchId;
-
     private OrderType orderType;
-
     private BigDecimal operationAmount;
-
-    private String description;
-
 }
 

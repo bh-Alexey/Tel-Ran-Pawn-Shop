@@ -9,7 +9,7 @@ import java.math.BigDecimal;
 @Data
 public class ProductCreationRequest {
 
-    private ProductName productName;
+    private String productName;
     private ProductStatus status;
     private BigDecimal interestRate;
 

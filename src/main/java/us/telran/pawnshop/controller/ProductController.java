@@ -36,7 +36,7 @@ public class ProductController {
 
     @PutMapping(path = "change/{productId}")
     public void updateProductById(@PathVariable("productId") Long productId,
-                           @RequestParam(required = false) ProductName productName,
+                           @RequestParam(required = false) String productName,
                            @RequestParam(required = false) ProductStatus productStatus,
                            @RequestParam(required = false) BigDecimal interestRate) {
 

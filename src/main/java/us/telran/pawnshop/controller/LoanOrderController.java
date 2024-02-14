@@ -19,7 +19,7 @@ public class LoanOrderController {
     private final LoanOrderService loanOrderService;
 
     @PostMapping(value = "new/expense")
-    public void addExpense(@RequestBody LoanOrderRequest loanOrderRequest) {
+    public void createLoanExpense(@RequestBody LoanOrderRequest loanOrderRequest) {
         loanOrderService.createLoanExpenseOrder(loanOrderRequest);
     }
     @GetMapping

@@ -25,8 +25,7 @@ public class Product {
     private Long productId;
 
     @Column(name = "product_name")
-    @Enumerated(STRING)
-    private ProductName productName;
+    private String productName;
 
     @Column(name = "status")
     @Enumerated(STRING)

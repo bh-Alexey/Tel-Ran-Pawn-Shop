@@ -14,7 +14,7 @@ public interface ProductService {
     List<Product> getProducts();
 
     void updateProduct(Long productId,
-                       ProductName productName,
+                       String productName,
                        ProductStatus productStatus,
                        BigDecimal interestRate);
 
