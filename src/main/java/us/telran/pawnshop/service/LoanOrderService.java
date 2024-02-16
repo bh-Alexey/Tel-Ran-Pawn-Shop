@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service;
 
+import jakarta.transaction.Transactional;
 import us.telran.pawnshop.dto.LoanOrderRequest;
 import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.Loan;
@@ -13,11 +14,9 @@ public interface LoanOrderService {
 
     void createLoanReceiptOrder(LoanOrderRequest loanOrderRequest);
 
-    void createLoanExpenseOrder(LoanOrderRequest loanOrderRequest);
+    void createLoanExpenseOrder(Loan loan);
 
-    BigDecimal getProlongationAmount(LoanProlongationRequest loanProlongationRequest);
-
-    void createLoanProlongationOrder(LoanOrderRequest loanOrderRequest);
+    void createLoanProlongationOrder(LoanProlongationRequest loanProlongationRequest);
 
     List<LoanOrder> getAllLoanOrders();
 

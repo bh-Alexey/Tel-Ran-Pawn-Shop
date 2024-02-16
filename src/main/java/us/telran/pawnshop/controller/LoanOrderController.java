@@ -3,6 +3,7 @@ package us.telran.pawnshop.controller;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.dto.LoanOrderRequest;
+import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.LoanOrder;
 import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.service.LoanOrderService;
@@ -18,14 +19,21 @@ public class LoanOrderController {
 
     private final LoanOrderService loanOrderService;
 
-    @PostMapping(value = "new/expense")
-    public void createLoanExpense(@RequestBody LoanOrderRequest loanOrderRequest) {
-        loanOrderService.createLoanExpenseOrder(loanOrderRequest);
+    @PostMapping(value = "income/prolongation")
+    public void createLoanProlongation(@RequestBody LoanProlongationRequest loanProlongationRequest) {
+        loanOrderService.createLoanProlongationOrder(loanProlongationRequest);
     }
-    @GetMapping
+
+    @PostMapping(value = "income/ransom")
+    public void createLoanReceipt(@RequestBody LoanOrderRequest loanOrderRequest) {
+        loanOrderService.createLoanReceiptOrder(loanOrderRequest);
+    }
+
+    @GetMapping("all")
     public List<LoanOrder> getLoanOrders() {
         return loanOrderService.getAllLoanOrders();
     }
+
 
 }
 

@@ -24,10 +24,10 @@ public class ClientServiceImpl implements ClientService {
     @Transactional
     public void addNewClient(ClientCreationRequest clientCreationRequest) {
 
-        Client existClient = findClientByEmail(clientCreationRequest.getEmail());
-        if (existClient != null) {
+        Optional<Client> existClient = clientRepository.findClientByEmail(clientCreationRequest.getEmail());
+        if (existClient.isPresent()) {
             throw new IllegalStateException("Email registered for client with id " 
-                    + existClient.getClientId());
+                    + existClient.get().getClientId());
         }
         else {
             Client client = new Client();

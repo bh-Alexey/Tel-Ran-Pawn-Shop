@@ -6,6 +6,7 @@ import us.telran.pawnshop.dto.LoanCreationRequest;
 import us.telran.pawnshop.entity.Loan;
 import us.telran.pawnshop.entity.enums.LoanStatus;
 import us.telran.pawnshop.entity.enums.LoanTerm;
+import us.telran.pawnshop.service.LoanOrderService;
 import us.telran.pawnshop.service.LoanService;
 
 import java.math.BigDecimal;
@@ -19,27 +20,27 @@ public class LoanController {
     private final LoanService loanService;
 
     @PostMapping(value = "new")
-    public void createNewClient(@RequestBody LoanCreationRequest loanCreationRequest) {
-        loanService.newCredit(loanCreationRequest);
+    public void createNewLoan(@RequestBody LoanCreationRequest loanCreationRequest) {
+        loanService.newLoan(loanCreationRequest);
     }
 
     @GetMapping
-    public List<Loan> getClients() {
+    public List<Loan> getLoans() {
         return loanService.getAllLoans();
     }
 
     @DeleteMapping(path = "remove/{loanId}")
-    public void deleteCredit(@PathVariable("loanId") Long loanId) {
-        loanService.deleteCredit(loanId);
+    public void deleteLoan(@PathVariable("loanId") Long loanId) {
+        loanService.deleteLoan(loanId);
     }
 
     @PutMapping(path = "update/{loanId}")
-    public void updateCredit(
+    public void updateLoan(
             @PathVariable("loanId") Long loanId,
             @RequestParam(required = false) BigDecimal creditAmount,
             @RequestParam(required = false) BigDecimal ransomAmount,
             @RequestParam(required = false) LoanTerm term,
             @RequestParam(required = false) LoanStatus status) {
-        loanService.updateCredit(loanId, creditAmount, ransomAmount, term, status);
+        loanService.updateLoan(loanId, creditAmount, ransomAmount, term, status);
     }
 }

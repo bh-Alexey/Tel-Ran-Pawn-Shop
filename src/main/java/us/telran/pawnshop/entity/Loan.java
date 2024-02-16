@@ -12,6 +12,8 @@ import us.telran.pawnshop.entity.enums.LoanTerm;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 
 import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.EnumType.*;
@@ -47,6 +49,9 @@ public class Loan {
     @Column(name = "created_at")
     private Timestamp createdAt;
 
+    @Column(name = "expired_at")
+    private LocalDateTime expiredAt;
+
     @LastModifiedDate
     @Column(name = "updated_at")
     private Timestamp updatedAt;
@@ -54,4 +59,9 @@ public class Loan {
     @Column(name = "loan_status")
     @Enumerated(STRING)
     private LoanStatus status;
+
+    @PrePersist
+    public void expiredAt() {
+        this.expiredAt = this.createdAt.toLocalDateTime().plusDays(this.getTerm().getDays());
+    }
 }

@@ -8,8 +8,6 @@ import java.math.BigDecimal;
 public class TransferRequest {
 
     private Long fromBranchId;
-
     private Long toBranchId;
-
     private BigDecimal transferAmount;
 }

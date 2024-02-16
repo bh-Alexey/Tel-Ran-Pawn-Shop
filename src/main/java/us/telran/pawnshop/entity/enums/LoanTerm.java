@@ -8,7 +8,8 @@ public enum LoanTerm {
     WEEK(7),
     TWO_WEEKS(2 * WEEK.getDays()),
     THREE_WEEKS(3 * WEEK.getDays()),
-    MONTH(30);
+    MONTH(30),
+    NONE(0);
 
     private final int days;
 

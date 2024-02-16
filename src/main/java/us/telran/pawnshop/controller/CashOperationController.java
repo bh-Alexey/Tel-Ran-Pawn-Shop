@@ -1,12 +1,12 @@
 package us.telran.pawnshop.controller;
 
 import lombok.RequiredArgsConstructor;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import us.telran.pawnshop.entity.CashOperation;
 import us.telran.pawnshop.service.CashOperationService;
 import us.telran.pawnshop.dto.CashOperationRequest;
+
+import java.util.List;
 
 
 @RestController
@@ -24,6 +24,11 @@ public class CashOperationController {
     @PostMapping(value = "collect")
     public void getCash(@RequestBody CashOperationRequest cashOperationRequest) {
         cashOperationService.collectCash(cashOperationRequest);
+    }
+
+    @GetMapping(value = "all")
+    public List<CashOperation> getAllOperations() {
+        return cashOperationService.getOperations();
     }
 
 }

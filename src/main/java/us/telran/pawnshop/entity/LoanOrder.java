@@ -11,7 +11,8 @@ import us.telran.pawnshop.entity.enums.OrderType;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import static jakarta.persistence.GenerationType.SEQUENCE;
+import static jakarta.persistence.EnumType.*;
+import static jakarta.persistence.GenerationType.*;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -34,6 +35,7 @@ public class LoanOrder {
     private Long orderId;
 
     @Column(name = "order_type")
+    @Enumerated(STRING)
     private OrderType orderType;
 
     @ManyToOne

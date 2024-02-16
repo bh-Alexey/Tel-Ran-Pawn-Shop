@@ -11,10 +11,13 @@ import us.telran.pawnshop.entity.enums.LoanTerm;
 import us.telran.pawnshop.repository.LoanRepository;
 import us.telran.pawnshop.repository.PercentageRepository;
 import us.telran.pawnshop.repository.PledgeRepository;
+import us.telran.pawnshop.service.LoanOrderService;
 import us.telran.pawnshop.service.LoanService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
+import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -25,16 +28,17 @@ public class LoanServiceImpl implements LoanService {
     private final LoanRepository loanRepository;
     private final PledgeRepository pledgeRepository;
     private final PercentageRepository percentageRepository;
+    private final LoanOrderService loanOrderService;
 
     @Value("${pawnshop.hundred.percents}")
-    private static BigDecimal hundred;
+    private BigDecimal hundred;
 
     @Value("${pawnshop.division.scale}")
-    private static int divisionScale;
+    private int divisionScale;
 
     @Override
     @Transactional
-    public void newCredit(LoanCreationRequest loanCreationRequest) {
+    public void newLoan(LoanCreationRequest loanCreationRequest) {
 
         Pledge pledge = pledgeRepository.findById(loanCreationRequest.getPledgeId())
                 .orElseThrow(() -> new IllegalStateException("Pledge not found"));
@@ -44,7 +48,7 @@ public class LoanServiceImpl implements LoanService {
 
         if (loanCreationRequest.getCreditAmount().compareTo(pledge.getEstimatedPrice()) > 0) {
             throw new IllegalStateException("Amount can't higher than " + pledge.getEstimatedPrice());
-        } else {
+        } else {tc
             loan.setLoanAmount(loanCreationRequest.getCreditAmount());
         }
 
@@ -62,6 +66,9 @@ public class LoanServiceImpl implements LoanService {
         loan.setStatus(LoanStatus.IN_USE);
 
         loanRepository.save(loan);
+
+        loanOrderService.createLoanExpenseOrder(loan);
+
     }
 
     @Override
@@ -80,11 +87,9 @@ public class LoanServiceImpl implements LoanService {
         }
     }
 
-
-
     @Override
     @Transactional
-    public void updateCredit(Long loanId,
+    public void updateLoan(Long loanId,
                              BigDecimal loanAmount,
                              BigDecimal ransomAmount,
                              LoanTerm term,
@@ -100,19 +105,23 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
-    @Transactional
-    public void updateCreditStatus(Long loanId, LoanStatus status) {
-        Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new IllegalStateException("Credit with id " + loanId + " doesn't exist"));
-        loan.setStatus(status);
+    public void deleteLoan(Long loanId) {
+        boolean exists = loanRepository.existsById(loanId);
+        if (!exists) {
+            throw new IllegalStateException("Loan with id " + loanId + " doesn't exist");
+        }
+        loanRepository.deleteById(loanId);
     }
 
     @Override
-    public void deleteCredit(Long loanId) {
-        boolean exists = loanRepository.existsById(loanId);
-        if (!exists) {
-            throw new IllegalStateException("Pledge with id " + loanId + " doesn't exist");
+    @Transactional
+    public void updateLoanStatus(Long loanId) {
+        Loan loan = getLoanById(loanId);
+        LocalDate expiredDate = loan.getExpiredAt().toLocalDate();
+        if (expiredDate.equals(LocalDate.now())) {
+            loan.setStatus(LoanStatus.EXPIRED);
         }
-        loanRepository.deleteById(loanId);
+
+        loanRepository.save(loan);
     }
 }
