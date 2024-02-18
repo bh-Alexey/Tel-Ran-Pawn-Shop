@@ -1,6 +1,7 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,7 +31,13 @@ public class PledgeCategory {
     )
     private Long categoryId;
 
-    @Column(name = "precious_metal")
+    @NotNull
+    @Column(name = "precious_metal", nullable = false, unique = true)
     @Enumerated(STRING)
     private PreciousMetal categoryName;
+
+    public PledgeCategory(PreciousMetal categoryName) {
+        this.categoryName = categoryName;
+    }
+
 }

@@ -1,6 +1,7 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Data;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -22,11 +23,13 @@ public class Percentage {
     @GeneratedValue(strategy = IDENTITY)
     private Long percentageId;
 
+    @NotNull
     @Column(name = "period", nullable = false)
     @Enumerated(STRING)
     private LoanTerm term;
 
-    @Column(name = "interest")
+    @NotNull
+    @Column(name = "interest", nullable = false, unique = true)
     private BigDecimal interest;
 
     @LastModifiedDate

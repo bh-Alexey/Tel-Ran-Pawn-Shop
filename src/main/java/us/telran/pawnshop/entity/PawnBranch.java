@@ -1,6 +1,7 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -25,10 +26,11 @@ public class PawnBranch {
     @GeneratedValue(strategy = IDENTITY)
     private Long branchId;
 
-    @Column(name = "balance")
+    @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
-    @Column(name = "address")
+    @NotBlank
+    @Column(name = "address", nullable = false, unique = true)
     private String address;
 
     @CreatedDate

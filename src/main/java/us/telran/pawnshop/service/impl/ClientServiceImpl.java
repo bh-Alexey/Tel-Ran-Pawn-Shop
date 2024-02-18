@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.dto.ClientCreationRequest;
+import us.telran.pawnshop.dto.ClientRealCreationRequest;
 import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.enums.ClientStatus;
 import us.telran.pawnshop.repository.ClientRepository;
@@ -44,20 +45,20 @@ public class ClientServiceImpl implements ClientService {
 
     @Override
     @Transactional
-    public void addNewClientReal(ClientCreationRequest clientCreationRequest) {
-        Client existClient = findClientBySsn(clientCreationRequest.getSocialSecurityNumber());
+    public void addNewClientReal(ClientRealCreationRequest clientRealCreationRequest) {
+        Client existClient = findClientBySsn(clientRealCreationRequest.getSocialSecurityNumber());
         if (existClient != null) {
             throw new IllegalStateException("Client registered with id "
                     + existClient.getClientId());
         }
         else {
             Client client = new Client();
-            client.setFirstName(clientCreationRequest.getFirstName());
-            client.setLastName(clientCreationRequest.getLastName());
-            client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
-            client.setSocialSecurityNumber(clientCreationRequest.getSocialSecurityNumber());
-            client.setEmail(clientCreationRequest.getEmail());
-            client.setAddress(clientCreationRequest.getAddress());
+            client.setFirstName(clientRealCreationRequest.getFirstName());
+            client.setLastName(clientRealCreationRequest.getLastName());
+            client.setDateOfBirth(clientRealCreationRequest.getDateOfBirth());
+            client.setSocialSecurityNumber(clientRealCreationRequest.getSocialSecurityNumber());
+            client.setEmail(clientRealCreationRequest.getEmail());
+            client.setAddress(clientRealCreationRequest.getAddress());
             client.setStatus(ClientStatus.REGULAR);
             clientRepository.save(client);
         }

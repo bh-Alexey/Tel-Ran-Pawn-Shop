@@ -1,11 +1,14 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
-import us.telran.pawnshop.entity.enums.ProductName;
 import us.telran.pawnshop.entity.enums.ProductStatus;
 
 import java.math.BigDecimal;
@@ -17,6 +20,7 @@ import static jakarta.persistence.GenerationType.*;
 @Entity
 @EntityListeners(AuditingEntityListener.class)
 @Data
+@NoArgsConstructor
 @Table(name = "products")
 public class Product {
 
@@ -24,10 +28,12 @@ public class Product {
     @GeneratedValue(strategy = IDENTITY)
     private Long productId;
 
-    @Column(name = "product_name")
+    @NotBlank
+    @Column(name = "product_name", nullable = false, unique = true)
     private String productName;
 
-    @Column(name = "status")
+    @NotNull
+    @Column(name = "status", nullable = false, updatable = true)
     @Enumerated(STRING)
     private ProductStatus status;
 

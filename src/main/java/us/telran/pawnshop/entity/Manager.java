@@ -1,12 +1,13 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 import us.telran.pawnshop.entity.enums.ManagerStatus;
+
 
 import java.sql.Timestamp;
 
@@ -17,6 +18,7 @@ import static jakarta.persistence.GenerationType.*;
 @EntityListeners(AuditingEntityListener.class)
 @Data
 @NoArgsConstructor
+@AllArgsConstructor
 @Table(name = "managers")
 public class Manager {
 
@@ -24,13 +26,16 @@ public class Manager {
     @GeneratedValue(strategy = IDENTITY)
     private Long managerId;
 
-    @Column(name = "first_name")
+    @NotBlank
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @NotBlank
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email")
+    @Email
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
     @CreatedDate
@@ -41,8 +46,16 @@ public class Manager {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @Column(name = "status")
+    @NotNull
+    @Column(name = "status", nullable = false)
     @Enumerated(STRING)
     private ManagerStatus managerStatus;
+
+    public Manager(String firstName, String lastName, String email, ManagerStatus managerStatus) {
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.managerStatus = managerStatus;
+    }
 
 }

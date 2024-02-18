@@ -1,9 +1,9 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import jakarta.validation.constraints.*;
+import lombok.*;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -24,6 +24,12 @@ import static jakarta.persistence.GenerationType.*;
 @Table(name = "clients")
 public class Client {
 
+    @Value("${pawnshop.ssn.origin}")
+    private int ssnOrigin;
+
+    @Value("${pawnshop.ssn.bound}")
+    private int ssnBound;
+
     @Id
     @SequenceGenerator(
             name = "client_sequence",
@@ -34,29 +40,37 @@ public class Client {
             strategy = SEQUENCE,
             generator = "client_sequence"
     )
-    @Column(name = "client_id", nullable = false, updatable = false)
+    @Column(name = "client_id", updatable = false)
     private Long clientId;
 
-    @Column(name = "status")
+    @NotNull
+    @Column(name = "status", nullable = false, updatable = true)
     @Enumerated(STRING)
     private ClientStatus status;
 
-    @Column(name = "ssn", length = 9)
+    @NotNull
+    @Column(name = "ssn", length = 9, nullable = false, unique = true)
     private int socialSecurityNumber;
 
-    @Column(name = "date_of_birth")
+    @NotNull
+    @Past
+    @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @Column(name = "first_name")
+    @NotBlank
+    @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @Column(name = "last_name")
+    @NotBlank
+    @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Column(name = "email")
+    @Email
+    @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @Column(name = "address")
+    @NotBlank
+    @Column(name = "address", nullable = false)
     private String address;
 
     @CreatedDate
@@ -69,6 +83,23 @@ public class Client {
 
     @PrePersist
     public void generateSocialSecurityNumber() {
-        this.socialSecurityNumber = ThreadLocalRandom.current().nextInt(100000000, 1000000000);
+        this.socialSecurityNumber = ThreadLocalRandom.current().nextInt(ssnOrigin, ++ssnBound);
+    }
+
+    public Client(ClientStatus status,
+                  int socialSecurityNumber,
+                  LocalDate dateOfBirth,
+                  String firstName,
+                  String lastName,
+                  String email,
+                  String address
+    ) {
+        this.status = status;
+        this.socialSecurityNumber = socialSecurityNumber;
+        this.dateOfBirth = dateOfBirth;
+        this.firstName = firstName;
+        this.lastName = lastName;
+        this.email = email;
+        this.address = address;
     }
 }

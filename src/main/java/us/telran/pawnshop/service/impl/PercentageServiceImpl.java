@@ -29,13 +29,13 @@ public class PercentageServiceImpl implements PercentageService {
     private String productName;
 
     @Value("${pawnshop.coefficient.change}")
-    private static BigDecimal coefficientChange;
+    private BigDecimal coefficientChange;
 
     @Value("${pawnshop.days.in.month}")
-    private static BigDecimal daysInMonth;
+    private BigDecimal daysInMonth;
 
     @Value("${pawnshop.division.scale}")
-    private static int divisionScale;
+    private int divisionScale;
 
     @Override
     @Transactional

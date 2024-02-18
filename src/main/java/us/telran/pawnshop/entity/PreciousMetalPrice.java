@@ -1,6 +1,7 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -31,11 +32,13 @@ public class PreciousMetalPrice {
     @JoinColumn(name = "category_id")
     private PledgeCategory category;
 
-    @Column(name = "purity")
+    @NotNull
+    @Column(name = "purity",nullable = false, unique = true)
     @Enumerated(STRING)
     public MetalPurity purity;
 
-    @Column(name = "price")
+    @NotNull
+    @Column(name = "price", nullable = false)
     private BigDecimal metalPrice;
 
     @LastModifiedDate
