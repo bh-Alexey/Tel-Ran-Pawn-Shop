@@ -6,12 +6,12 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import us.telran.pawnshop.entity.Loan;
 
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
 @Repository
 public interface LoanRepository extends JpaRepository<Loan, Long> {
     @Query("SELECT l FROM Loan l WHERE l.expiredAt < :expiredAt")
-    List<Loan> findAllByExpiredAtBefore(@Param("expiredAt") LocalDateTime expiredAt);
+    List<Loan> getLoansExpired(@Param("expiredAt") LocalDateTime expiredAt);
+
 }

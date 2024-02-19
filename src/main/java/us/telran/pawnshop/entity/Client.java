@@ -25,9 +25,11 @@ import static jakarta.persistence.GenerationType.*;
 public class Client {
 
     @Value("${pawnshop.ssn.origin}")
+    @Transient
     private int ssnOrigin;
 
     @Value("${pawnshop.ssn.bound}")
+    @Transient
     private int ssnBound;
 
     @Id

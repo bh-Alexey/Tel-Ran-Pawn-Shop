@@ -1,6 +1,8 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Future;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -35,20 +37,24 @@ public class Loan {
     @JoinColumn(name = "pledge_id")
     private Pledge pledge;
 
-    @Column(name = "loan_amount")
+    @NotNull
+    @Column(name = "loan_amount", nullable = false)
     private BigDecimal loanAmount;
 
-    @Column(name = "term")
+    @NotNull
+    @Column(name = "term", nullable = false)
     @Enumerated(STRING)
     private LoanTerm term;
 
-    @Column(name = "ransom_amount")
+    @NotNull
+    @Column(name = "ransom_amount", nullable = false)
     private BigDecimal ransomAmount;
 
     @CreatedDate
     @Column(name = "created_at")
     private Timestamp createdAt;
 
+    @Future
     @Column(name = "expired_at")
     private LocalDateTime expiredAt;
 
@@ -63,5 +69,11 @@ public class Loan {
     @PrePersist
     public void expiredAt() {
         this.expiredAt = this.createdAt.toLocalDateTime().plusDays(this.getTerm().getDays());
+    }
+
+    public Loan(Pledge pledge, BigDecimal loanAmount, LoanTerm term) {
+        this.pledge = pledge;
+        this.loanAmount = loanAmount;
+        this.term = term;
     }
 }

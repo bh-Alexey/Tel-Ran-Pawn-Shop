@@ -17,6 +17,7 @@ import us.telran.pawnshop.service.LoanService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -116,8 +117,8 @@ public class LoanServiceImpl implements LoanService {
     @Transactional
     public void updateLoanStatus(Long loanId) {
         Loan loan = getLoanById(loanId);
-        LocalDate expiredDate = loan.getExpiredAt().toLocalDate();
-        if (expiredDate.equals(LocalDate.now())) {
+        LocalDateTime expiredDate = loan.getExpiredAt();
+        if (LocalDateTime.now().isAfter(expiredDate)) {
             loan.setStatus(LoanStatus.EXPIRED);
         }
 

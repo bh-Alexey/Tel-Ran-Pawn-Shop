@@ -47,4 +47,10 @@ public class Product {
     @LastModifiedDate
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
+    public Product(String productName, ProductStatus status, BigDecimal interestRate) {
+        this.productName = productName;
+        this.status = status;
+        this.interestRate = interestRate;
+    }
 }

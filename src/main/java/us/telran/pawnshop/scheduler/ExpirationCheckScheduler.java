@@ -22,10 +22,10 @@ public class ExpirationCheckScheduler {
     @Transactional
     public void checkAndExpireLoan() {
         LocalDate today = LocalDate.now();
-        List<Loan> loansToExpire = loanRepository.findAllByExpiredAtBefore(today.atStartOfDay());
-        for (Loan loan : loansToExpire) {
+        List<Loan> loansToExpire = loanRepository.getLoansExpired(today.atStartOfDay());
+        loansToExpire.forEach(loan -> {
             loan.setStatus(LoanStatus.EXPIRED);
             loanRepository.save(loan);
-        }
+        });
     }
 }

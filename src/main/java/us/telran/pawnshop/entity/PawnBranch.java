@@ -2,6 +2,7 @@ package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -26,6 +27,7 @@ public class PawnBranch {
     @GeneratedValue(strategy = IDENTITY)
     private Long branchId;
 
+    @PositiveOrZero
     @Column(name = "balance", nullable = false)
     private BigDecimal balance;
 
@@ -40,5 +42,6 @@ public class PawnBranch {
     @LastModifiedDate
     @Column(name = "updated_at")
     private Timestamp updatedAt;
+
 }
 

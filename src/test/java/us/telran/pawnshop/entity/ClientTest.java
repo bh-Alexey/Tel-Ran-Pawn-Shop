@@ -7,7 +7,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 class ClientTest {
 
     @Test
-    void generateSocialSecurityNumber_withinExpectedRange() {
+    void itShouldGenerateSocialSecurityNumber() {
         //given
         Client client = new Client();
         client.setSsnOrigin(100000000);

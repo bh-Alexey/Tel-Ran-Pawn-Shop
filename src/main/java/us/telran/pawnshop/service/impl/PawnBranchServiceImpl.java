@@ -29,9 +29,9 @@ public class PawnBranchServiceImpl implements PawnBranchService {
 
     @Override
     @Transactional
-    public void updateBranch(Long bankId, String address) {
+    public void updateBranch(Long branchId, String address) {
 
-        Optional<PawnBranch> optionalBank = pawnBranchRepository.findById(bankId);
+        Optional<PawnBranch> optionalBank = pawnBranchRepository.findById(branchId);
         if (optionalBank.isPresent()) {
             PawnBranch branch = optionalBank.get();
             branch.setAddress(address);
@@ -48,8 +48,8 @@ public class PawnBranchServiceImpl implements PawnBranchService {
     public void deleteBranch(Long categoryId) {
         Optional<PawnBranch> optionalBank = pawnBranchRepository.findById(categoryId);
         if (optionalBank.isPresent()) {
-            PawnBranch bank = optionalBank.get();
-            pawnBranchRepository.delete(bank);
+            PawnBranch branch = optionalBank.get();
+            pawnBranchRepository.delete(branch);
         }
         else {
             throw new NoSuchElementException("Pawn shop not found");

@@ -10,7 +10,5 @@ import java.util.Optional;
 
 @Repository
 public interface PledgeRepository extends JpaRepository<Pledge, Long> {
-    @Query("SELECT pl.product FROM Pledge pl WHERE pl.pledgeId = ?1")
-    Optional<Product> findProductByPledgeId(Long pledgeId);
 
 }

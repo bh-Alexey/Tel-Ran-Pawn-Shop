@@ -1,6 +1,8 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -30,22 +32,27 @@ public class Pledge {
     @GeneratedValue(strategy = IDENTITY)
     private Long pledgeId;
 
+    @NotNull
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
+    @NotNull
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
+    @NotNull
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "client_id")
     private Client client;
 
+    @NotNull
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "category_id")
     private PledgeCategory category;
 
+    @NotNull
     @Column(name = "item")
     @Enumerated(STRING)
     private ItemType item;
@@ -53,32 +60,62 @@ public class Pledge {
     @Column(name = "description")
     private String description;
 
+    @NotNull
     @Column(name = "quantity")
     private int itemQuantity;
 
+    @NotNull
     @Column(name = "stamp")
     @Enumerated(STRING)
     private MetalPurity purity;
 
+    @NotNull
     @Column(name = "gross_weight")
     private BigDecimal weightGross;
 
+    @NotNull
     @Column(name = "net_weight")
     private BigDecimal weightNet;
 
-    @Column(name = "price")
+    @Positive
+    @Column(name = "price", nullable = false)
     private BigDecimal estimatedPrice;
 
+    @NotNull
     @Column(name = "status")
     @Enumerated(STRING)
     private PledgeStatus status;
 
+    @NotNull
     @Column(name = "created_at")
     @CreatedDate
     private Timestamp createdAt;
 
+    @NotNull
     @Column(name = "updated_at")
     @LastModifiedDate
     private Timestamp updatedAt;
 
+    public Pledge(Product product,
+                  Manager manager,
+                  Client client,
+                  PledgeCategory category,
+                  ItemType item,
+                  String description,
+                  int itemQuantity,
+                  MetalPurity purity,
+                  BigDecimal weightGross,
+                  BigDecimal weightNet
+    ) {
+        this.product = product;
+        this.manager = manager;
+        this.client = client;
+        this.category = category;
+        this.item = item;
+        this.description = description;
+        this.itemQuantity = itemQuantity;
+        this.purity = purity;
+        this.weightGross = weightGross;
+        this.weightNet = weightNet;
+    }
 }
