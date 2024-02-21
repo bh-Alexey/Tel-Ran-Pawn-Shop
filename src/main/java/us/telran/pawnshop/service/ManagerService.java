@@ -7,7 +7,7 @@ import java.util.List;
 
 public interface ManagerService {
 
-    List<Manager> getAppraisers();
+    List<Manager> getManagers();
 
     void addNewManager(ManagerCreationRequest managerCreationRequest);
 

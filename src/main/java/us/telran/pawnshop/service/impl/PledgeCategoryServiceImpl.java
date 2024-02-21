@@ -44,18 +44,18 @@ public class PledgeCategoryServiceImpl implements PledgeCategoryService {
 
     @Override
     @Transactional
-    public void updateCategory(Long categoryId, PreciousMetal categoryName) {
+    public void updateCategory(Long categoryId, PreciousMetal newCategoryName) {
+        PledgeCategory category = pledgeCategoryRepository.findById(categoryId)
+                .orElseThrow(() -> new IllegalStateException("Category with id " + categoryId + " does not exist"));
 
-            PledgeCategory category = pledgeCategoryRepository.findById(categoryId)
-                    .orElseThrow(() -> new IllegalStateException("Category with id " + categoryId + " doesn't exist"));
+        if (newCategoryName == null || Objects.equals(category.getCategoryName(), newCategoryName)) {
+            throw new IllegalStateException("Invalid category name provided");
+        }
 
-            if (categoryName != null && !Objects.equals(category.getCategoryName(), categoryName)) {
-
-                Optional<PledgeCategory> pledgeCategoryOptional = pledgeCategoryRepository.findByCategoryName(categoryName);
-                if (pledgeCategoryOptional.isPresent()) {
-                    throw new IllegalStateException("Category introduced");
-                }
-                category.setCategoryName(categoryName);
-            }
+        category.setCategoryName(newCategoryName);
+        pledgeCategoryRepository.save(category);
     }
 }
+
+
+

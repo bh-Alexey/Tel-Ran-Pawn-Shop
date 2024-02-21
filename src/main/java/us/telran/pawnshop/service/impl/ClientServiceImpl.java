@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -24,44 +26,49 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void addNewClient(ClientCreationRequest clientCreationRequest) {
+        clientRepository.findClientByEmail(clientCreationRequest.getEmail())
+                .ifPresent(client -> {
+                    throw new EntityExistsException("Email registered for client with id "
+                            + client.getClientId());
+                });
 
-        Optional<Client> existClient = clientRepository.findClientByEmail(clientCreationRequest.getEmail());
-        if (existClient.isPresent()) {
-            throw new IllegalStateException("Email registered for client with id " 
-                    + existClient.get().getClientId());
-        }
-        else {
-            Client client = new Client();
-            client.setFirstName(clientCreationRequest.getFirstName());
-            client.setLastName(clientCreationRequest.getLastName());
-            client.setDateOfBirth(clientCreationRequest.getDateOfBirth());
-            client.generateSocialSecurityNumber();
-            client.setEmail(clientCreationRequest.getEmail());
-            client.setAddress(clientCreationRequest.getAddress());
-            client.setStatus(ClientStatus.REGULAR);
-            clientRepository.save(client);
-        }
+        Client client = createClient(clientCreationRequest);
+        clientRepository.save(client);
+    }
+
+    private Client createClient(ClientCreationRequest request) {
+        Client client = new Client();
+        client.setFirstName(request.getFirstName());
+        client.setLastName(request.getLastName());
+        client.setDateOfBirth(request.getDateOfBirth());
+        client.generateSocialSecurityNumber();
+        client.setEmail(request.getEmail());
+        client.setAddress(request.getAddress());
+        client.setStatus(ClientStatus.REGULAR);
+        return client;
     }
 
     @Override
     @Transactional
-    public void addNewClientReal(ClientRealCreationRequest clientRealCreationRequest) {
-        Client existClient = findClientBySsn(clientRealCreationRequest.getSocialSecurityNumber());
-        if (existClient != null) {
-            throw new IllegalStateException("Client registered with id "
-                    + existClient.getClientId());
-        }
-        else {
-            Client client = new Client();
-            client.setFirstName(clientRealCreationRequest.getFirstName());
-            client.setLastName(clientRealCreationRequest.getLastName());
-            client.setDateOfBirth(clientRealCreationRequest.getDateOfBirth());
-            client.setSocialSecurityNumber(clientRealCreationRequest.getSocialSecurityNumber());
-            client.setEmail(clientRealCreationRequest.getEmail());
-            client.setAddress(clientRealCreationRequest.getAddress());
-            client.setStatus(ClientStatus.REGULAR);
-            clientRepository.save(client);
-        }
+    public void addNewRealClient(ClientRealCreationRequest clientRealCreationRequest) {
+        clientRepository.findClientBySsn(clientRealCreationRequest.getSocialSecurityNumber())
+                .ifPresent(client -> {
+                    throw new IllegalStateException("Client already registered with id " + client.getClientId());
+                });
+
+        Client client = createRealClient(clientRealCreationRequest);
+        clientRepository.save(client);
+    }
+    private Client createRealClient(ClientRealCreationRequest clientRealCreationRequest) {
+        Client client = new Client();
+        client.setFirstName(clientRealCreationRequest.getFirstName());
+        client.setLastName(clientRealCreationRequest.getLastName());
+        client.setDateOfBirth(clientRealCreationRequest.getDateOfBirth());
+        client.setSocialSecurityNumber(clientRealCreationRequest.getSocialSecurityNumber());
+        client.setEmail(clientRealCreationRequest.getEmail());
+        client.setAddress(clientRealCreationRequest.getAddress());
+        client.setStatus(ClientStatus.REGULAR);
+        return client;
     }
 
     @Override
@@ -112,44 +119,27 @@ public class ClientServiceImpl implements ClientService {
     @Override
     @Transactional
     public void deleteClient(Long clientId) {
-        boolean exists = clientRepository.existsById(clientId);
-        if (!exists) {
-            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
-        }
-        clientRepository.deleteById(clientId);
+        clientRepository.findById(clientId)
+                .ifPresentOrElse(
+                    clientRepository::delete,
+                    () -> { throw new EntityNotFoundException("Client with id " + clientId + " doesn't exist"); }
+                );
     }
 
     @Override
     public Client getClientById(Long clientId) {
-        Optional<Client> clientOptional = clientRepository.findById(clientId);
-        if (clientOptional.isPresent()) {
-            return clientOptional.get();
-        }
-        else {
-            throw new IllegalStateException("Client with id " + clientId + " doesn't exist");
-        }
+        return clientRepository.findById(clientId)
+                .orElseThrow(() -> new EntityNotFoundException("Client with id " + clientId + " doesn't exist"));
     }
 
     @Override
     public Client findClientBySsn(int ssn) {
-        Optional<Client> clientOptional = clientRepository
-                .findClientBySsn(ssn);
-        if (clientOptional.isPresent()) {
-            return clientOptional.get();
-        }
-        else {
-            throw new IllegalStateException("Client with ssn " + ssn + " doesn't exist");
-        }
+        return clientRepository.findClientBySsn(ssn)
+                .orElseThrow(() -> new EntityNotFoundException("Client with ssn " + ssn + " doesn't exist"));
     }
     
     public Client findClientByEmail(String email) {
-        Optional<Client> clientOptional = clientRepository
-                .findClientByEmail(email);
-        if (clientOptional.isPresent()) {
-            return clientOptional.get();
-        }
-        else {
-            throw new IllegalStateException("Client with email " + email + " doesn't exist");
-        }
+        return clientRepository.findClientByEmail(email)
+                .orElseThrow(() -> new EntityNotFoundException("Client with email " + email + " doesn't exist"));
     }
 }

@@ -16,7 +16,7 @@ public class ManagerController {
     private final ManagerService managerService;
     @GetMapping
     public List<Manager> getManagers() {
-        return managerService.getAppraisers();
+        return managerService.getManagers();
     }
 
     @PostMapping(value = "new")

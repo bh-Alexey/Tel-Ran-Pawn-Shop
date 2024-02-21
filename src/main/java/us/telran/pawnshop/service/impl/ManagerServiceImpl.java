@@ -19,7 +19,7 @@ public class ManagerServiceImpl implements ManagerService {
 
     public final ManagerRepository managerRepository;
     @Override
-    public List<Manager> getAppraisers() {
+    public List<Manager> getManagers() {
         return managerRepository.findAll();
     }
 

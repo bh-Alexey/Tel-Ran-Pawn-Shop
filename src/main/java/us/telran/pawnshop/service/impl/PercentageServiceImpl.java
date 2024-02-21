@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
@@ -8,7 +9,6 @@ import us.telran.pawnshop.dto.PercentageCreationRequest;
 import us.telran.pawnshop.entity.Percentage;
 import us.telran.pawnshop.entity.Product;
 import us.telran.pawnshop.entity.enums.LoanTerm;
-import us.telran.pawnshop.entity.enums.ProductName;
 import us.telran.pawnshop.repository.PercentageRepository;
 import us.telran.pawnshop.repository.ProductRepository;
 import us.telran.pawnshop.service.PercentageService;
@@ -16,7 +16,7 @@ import us.telran.pawnshop.service.PercentageService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
+import java.util.NoSuchElementException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,19 +41,15 @@ public class PercentageServiceImpl implements PercentageService {
     @Transactional
     public void addPercentage(PercentageCreationRequest percentageCreationRequest) {
         LoanTerm requestTerm = percentageCreationRequest.getTerm();
-        percentageRepository.findByTerm(requestTerm)
-                .ifPresent(s -> {
-                    throw new IllegalStateException("interests for this term introduced");
-                });
 
-        Product product = productRepository.findByProductName(productName)
-                .orElseThrow(() -> new IllegalStateException("Product not found"));
+        checkRequest(requestTerm);
 
-        BigDecimal baseInterestRate = product.getInterestRate();
+        BigDecimal baseInterestRate = getProductRate(this.productName);
         int period = requestTerm.getDays();
         BigDecimal interest = calculateInterest(baseInterestRate, period);
 
         Percentage newPercentage = createNewPercentage(requestTerm, interest);
+
         percentageRepository.save(newPercentage);
     }
 
@@ -73,6 +69,19 @@ public class PercentageServiceImpl implements PercentageService {
         percentage.setTerm(term);
         percentage.setInterest(interest);
         return percentage;
+    }
+
+    private void checkRequest(LoanTerm term) {
+        percentageRepository.findByTerm(term)
+                .ifPresent(exception -> {
+                    throw new IllegalStateException("Percentage for this term introduced");
+                });
+    }
+
+    private BigDecimal getProductRate(String productName) {
+        return productRepository.findByProductName(productName)
+                .map(Product::getInterestRate)
+                .orElseThrow(() -> new EntityNotFoundException("Product not found with name: " + productName));
     }
 
     @Override

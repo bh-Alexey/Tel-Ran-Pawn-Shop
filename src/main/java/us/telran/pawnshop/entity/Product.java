@@ -3,6 +3,7 @@ package us.telran.pawnshop.entity;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -37,6 +38,7 @@ public class Product {
     @Enumerated(STRING)
     private ProductStatus status;
 
+    @PositiveOrZero
     @Column(name = "rate")
     private BigDecimal interestRate;
 
