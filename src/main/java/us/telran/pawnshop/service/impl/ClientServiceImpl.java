@@ -53,7 +53,7 @@ public class ClientServiceImpl implements ClientService {
     public void addNewRealClient(ClientRealCreationRequest clientRealCreationRequest) {
         clientRepository.findClientBySsn(clientRealCreationRequest.getSocialSecurityNumber())
                 .ifPresent(client -> {
-                    throw new IllegalStateException("Client already registered with id " + client.getClientId());
+                    throw new EntityExistsException("Client already registered with id " + client.getClientId());
                 });
 
         Client client = createRealClient(clientRealCreationRequest);
@@ -101,7 +101,7 @@ public class ClientServiceImpl implements ClientService {
                && !Objects.equals(client.getEmail(), email)) {
             Optional<Client> clientOptional = clientRepository.findClientByEmail(email);
             if (clientOptional.isPresent()) {
-                throw new IllegalStateException("Email registered");
+                throw new EntityExistsException("Email registered");
             }
             client.setEmail(email);
         }

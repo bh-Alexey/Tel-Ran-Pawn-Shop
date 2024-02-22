@@ -1,8 +1,10 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.IllegalTransactionStateException;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.repository.PawnBranchRepository;
@@ -22,12 +24,12 @@ public class TransferServiceImpl implements TransferService {
     public void cashTransfer(TransferRequest transferRequest) {
 
             PawnBranch fromBranch = pawnBranchRepository.findById(transferRequest.getFromBranchId())
-                    .orElseThrow(() -> new RuntimeException("Sender branch not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Sender branch not found"));
             PawnBranch toBranch = pawnBranchRepository.findById(transferRequest.getToBranchId())
-                    .orElseThrow(() -> new RuntimeException("Recipient branch not found"));
+                    .orElseThrow(() -> new EntityNotFoundException("Recipient branch not found"));
 
             if (fromBranch.getBalance().compareTo(transferRequest.getTransferAmount()) < 0) {
-                throw new RuntimeException("No enough money for the transfer ");
+                throw new IllegalTransactionStateException("No enough money for the transfer ");
             }
 
             fromBranch.setBalance(fromBranch.getBalance().subtract(transferRequest.getTransferAmount()));

@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -76,7 +78,7 @@ class PercentageServiceImplTest {
         given(percentageRepository.findByTerm(any(LoanTerm.class))).willReturn(Optional.of(percentage));
 
         //Then
-        assertThatExceptionOfType(IllegalStateException.class)
+        assertThatExceptionOfType(EntityExistsException.class)
                 .isThrownBy(() -> {
                     underTest.addPercentage(request);
                 })
@@ -93,10 +95,59 @@ class PercentageServiceImplTest {
     }
 
     @Test
-    void updatePercentage() {
+    void canUpdatePercentage() {
+        //Given
+        Percentage percentage = new Percentage();
+        percentage.setInterest(new BigDecimal("2.0"));
+
+        //When
+        when(percentageRepository.findById(anyLong())).thenReturn(Optional.of(percentage));
+
+        underTest.updatePercentage(1L, new BigDecimal("3.0"));
+
+        //Then
+        verify(percentageRepository, times(1)).findById(1L);
+        assertThat(percentage.getInterest()).isEqualByComparingTo(new BigDecimal("3.0"));
     }
 
     @Test
-    void deletePercentage() {
+    void willThrowIfPercentageForUpdateNotFound() {
+        //When
+        when(percentageRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+        //Then
+        assertThatThrownBy(() -> underTest.updatePercentage(1L, new BigDecimal("3.0")))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Percentage with id " + 1L + " not found");
+
+    }
+
+    @Test
+    void canDeletePercentage() {
+        //Given
+        Percentage percentage = new Percentage();
+        percentage.setInterest(new BigDecimal("2.0"));
+
+        //When
+        when(percentageRepository.findById(anyLong())).thenReturn(Optional.of(percentage));
+
+        underTest.deletePercentage(1L);
+
+        //Then
+        verify(percentageRepository, times(1)).findById(1L);
+        verify(percentageRepository, times(1)).deleteById(1L);
+    }
+
+    @Test
+    void willThrowIfPercentageForDeleteNotFound() {
+        //When
+        when(percentageRepository.findById(anyLong())).thenReturn(Optional.empty());
+
+
+        //Then
+        assertThatThrownBy(() -> underTest.deletePercentage(1L))
+                .isInstanceOf(EntityNotFoundException.class)
+                .hasMessageContaining("Percentage with id " + 1L + " not found");
+
     }
 }

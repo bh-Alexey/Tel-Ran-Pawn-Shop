@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,7 +30,7 @@ public class ProductServiceImpl implements ProductService {
         Optional<Product> productOptional = productRepository
                 .findByProductName(productCreationRequest.getProductName());
         if (productOptional.isPresent()) {
-            throw new IllegalStateException("Product presented");
+            throw new EntityExistsException("Product presented");
         }
 
         Product product = new Product();
@@ -51,7 +53,7 @@ public class ProductServiceImpl implements ProductService {
                               BigDecimal interestRate
     ) {
         Product product = productRepository.findById(productId)
-                    .orElseThrow(() -> new IllegalStateException("Product with id " + productId + " doesn't exist"));
+                    .orElseThrow(() -> new EntityNotFoundException("Product with id " + productId + " doesn't exist"));
 
         if (productName != null && !Objects.equals(product.getProductName(), productName)) {
             product.setProductName(productName);

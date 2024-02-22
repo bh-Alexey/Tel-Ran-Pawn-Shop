@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -22,7 +24,7 @@ public class PledgeCategoryServiceImpl implements PledgeCategoryService {
     public void addNewCategory(PledgeCategory categoryName) {
         Optional<PledgeCategory> pledgeCategoryOptional = pledgeCategoryRepository.findByCategoryName(categoryName.getCategoryName());
         if (pledgeCategoryOptional.isPresent()) {
-            throw new IllegalStateException("Category introduced");
+            throw new EntityExistsException("Category introduced");
         }
         pledgeCategoryRepository.save(categoryName);
     }
@@ -36,7 +38,7 @@ public class PledgeCategoryServiceImpl implements PledgeCategoryService {
     public void deleteCategory(Long categoryId) {
         boolean exists = pledgeCategoryRepository.existsById(categoryId);
         if (!exists) {
-            throw new IllegalStateException("Category with id " + categoryId + " doesn't exist");
+            throw new EntityNotFoundException("Category with id " + categoryId + " doesn't exist");
         }
         pledgeCategoryRepository.deleteById(categoryId);
     }
@@ -46,7 +48,7 @@ public class PledgeCategoryServiceImpl implements PledgeCategoryService {
     @Transactional
     public void updateCategory(Long categoryId, PreciousMetal newCategoryName) {
         PledgeCategory category = pledgeCategoryRepository.findById(categoryId)
-                .orElseThrow(() -> new IllegalStateException("Category with id " + categoryId + " does not exist"));
+                .orElseThrow(() -> new EntityNotFoundException("Category with id " + categoryId + " does not exist"));
 
         if (newCategoryName == null || Objects.equals(category.getCategoryName(), newCategoryName)) {
             throw new IllegalStateException("Invalid category name provided");

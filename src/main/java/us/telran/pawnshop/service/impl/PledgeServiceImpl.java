@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -30,19 +31,19 @@ public class PledgeServiceImpl implements PledgeService {
     @Transactional
     public void newPledge(PledgeCreationRequest pledgeCreationRequest) {
         Client client = clientRepository.findById(pledgeCreationRequest.getClientId())
-                .orElseThrow(() -> new IllegalStateException("Client not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Client not found"));
 
         Product product = productRepository.findById(pledgeCreationRequest.getProductId())
-                .orElseThrow(() -> new IllegalStateException("Product with id " + pledgeCreationRequest.getProductId() + " not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Product with id " + pledgeCreationRequest.getProductId() + " not found"));
 
         PledgeCategory category = pledgeCategoryRepository.findById(pledgeCreationRequest.getCategoryId())
-                .orElseThrow(() -> new IllegalStateException("Category not identified"));
+                .orElseThrow(() -> new EntityNotFoundException("Category not identified"));
 
         Manager manager = managerRepository.findById(pledgeCreationRequest.getManagerId())
-                .orElseThrow(() -> new IllegalStateException("Manager not have been chosen"));
+                .orElseThrow(() -> new EntityNotFoundException("Manager has not been chosen"));
 
         PreciousMetalPrice metalPrice = preciousMetalPriceRepository.findByPurity(pledgeCreationRequest.getPurity())
-                .orElseThrow(() -> new IllegalStateException("Price not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Price not found"));
 
         Pledge pledge = new Pledge();
         pledge.setClient(client);
@@ -70,8 +71,7 @@ public class PledgeServiceImpl implements PledgeService {
     @Transactional
     public void updatePledge(Long pledgeId, String description, PledgeStatus status, int itemQuantity) {
         Pledge pledge = pledgeRepository.findById(pledgeId)
-                .orElseThrow(() -> new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist"));
-
+                .orElseThrow(() -> new EntityNotFoundException("Pledge with id " + pledgeId + " doesn't exist"));
 
         pledge.setDescription(description);
         pledge.setItemQuantity(itemQuantity);
@@ -83,22 +83,19 @@ public class PledgeServiceImpl implements PledgeService {
     }
 
     @Override
+    @Transactional
     public void deletePledge(Long pledgeId){
         boolean exists = pledgeRepository.existsById(pledgeId);
         if (!exists) {
-            throw new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist");
+            throw new EntityNotFoundException("Pledge with id " + pledgeId + " doesn't exist");
         }
         pledgeRepository.deleteById(pledgeId);
     }
+
     @Override
     public Pledge findPledgeById(Long pledgeId) {
-        Optional<Pledge> pledgeOptional = pledgeRepository.findById(pledgeId);
-        if (pledgeOptional.isPresent()) {
-            return pledgeOptional.get();
-        }
-        else {
-            throw new IllegalStateException("Pledge with id " + pledgeId + " doesn't exist");
-        }
+        return pledgeRepository.findById(pledgeId)
+                .orElseThrow(() -> new EntityNotFoundException("Pledge with id " + pledgeId + " doesn't exist"));
     }
 }
 

@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -28,7 +30,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
         Optional<PreciousMetalPrice> preciousMetalPriceOptional = preciousMetalPriceRepository
                 .findByPurity(preciousMetalPriceCreationRequest.getPurity());
         if (preciousMetalPriceOptional.isPresent()) {
-            throw new IllegalStateException("Price for this purity " + preciousMetalPriceCreationRequest.getPurity()
+            throw new EntityExistsException("Price for this purity " + preciousMetalPriceCreationRequest.getPurity()
                                             + " already presented");
         }
         else {
@@ -50,7 +52,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
     @Transactional
     public void updateMetalPrice(Long priceId, BigDecimal metalPrice) {
         PreciousMetalPrice preciousMetalPrice = preciousMetalPriceRepository.findById(priceId)
-                .orElseThrow(() -> new IllegalStateException("Manager with id " + priceId + " doesn't exist"));
+                .orElseThrow(() -> new EntityNotFoundException("Manager with id " + priceId + " doesn't exist"));
         preciousMetalPrice.setMetalPrice(metalPrice);
     }
 
@@ -59,7 +61,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
     public void deleteMetalPrice(Long priceId) {
         boolean exists = preciousMetalPriceRepository.existsById(priceId);
         if (!exists) {
-            throw new IllegalStateException("Price with id " + priceId + " doesn't exist");
+            throw new EntityNotFoundException("Price with id " + priceId + " doesn't exist");
         }
         preciousMetalPriceRepository.deleteById(priceId);
     }

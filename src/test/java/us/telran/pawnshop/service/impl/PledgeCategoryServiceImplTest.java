@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -99,7 +100,7 @@ class PledgeCategoryServiceImplTest {
         Throwable thrown = catchThrowable(() -> underTest.deleteCategory(categoryId));
 
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Category with id " + categoryId + " doesn't exist");
 
         verify(pledgeCategoryRepository, times(1)).existsById(categoryId);
@@ -150,7 +151,7 @@ class PledgeCategoryServiceImplTest {
 
         // Then
         assertThatThrownBy(() -> underTest.updateCategory(categoryId, PreciousMetal.SILVER))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Category with id " + categoryId + " does not exist");
 
         verify(pledgeCategoryRepository, times(1)).findById(categoryId);

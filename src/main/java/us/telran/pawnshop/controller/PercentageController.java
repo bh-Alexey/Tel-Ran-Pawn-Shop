@@ -28,15 +28,14 @@ public class PercentageController {
 
     @DeleteMapping(path = "remove/{percentageId}")
     public void deletePercentage(@PathVariable("percentageId") Long percentageId) {
-        ;
+        percentageService.deletePercentage(percentageId);
     }
 
     @PutMapping(path = "update/{percentageId}")
     public void updatePercentage(
             @PathVariable("percentageId") Long percentageId,
-            @RequestParam(required = false) int period,
             @RequestParam(required = false) BigDecimal interest) {
-        percentageService.updatePercentage(percentageId, period, interest);
+        percentageService.updatePercentage(percentageId, interest);
     }
 
 }

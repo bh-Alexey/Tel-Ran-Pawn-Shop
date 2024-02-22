@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -70,7 +72,7 @@ class PreciousMetalPriceServiceImplTest {
         Throwable thrown = catchThrowable(() -> underTest.addNewPrice(request));
 
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Price for this purity " + request.getPurity() + " already presented");
 
         verify(preciousMetalPriceRepository, times(1)).findByPurity(request.getPurity());
@@ -118,7 +120,7 @@ class PreciousMetalPriceServiceImplTest {
 
         //Then
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Manager with id " + priceId + " doesn't exist");
     }
 
@@ -146,7 +148,7 @@ class PreciousMetalPriceServiceImplTest {
         Throwable thrown = catchThrowable(() -> underTest.deleteMetalPrice(priceId));
 
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Price with id " + priceId + " doesn't exist");
 
         verify(preciousMetalPriceRepository, times(1)).existsById(priceId);

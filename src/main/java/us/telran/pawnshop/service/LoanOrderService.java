@@ -1,6 +1,5 @@
 package us.telran.pawnshop.service;
 
-import jakarta.transaction.Transactional;
 import us.telran.pawnshop.dto.LoanOrderRequest;
 import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.Loan;
@@ -20,4 +19,5 @@ public interface LoanOrderService {
 
     List<LoanOrder> getAllLoanOrders();
 
+    BigDecimal giveRansomAmount(Long loanId);
 }

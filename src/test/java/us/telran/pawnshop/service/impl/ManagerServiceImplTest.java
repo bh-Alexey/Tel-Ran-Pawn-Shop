@@ -1,4 +1,6 @@
 package us.telran.pawnshop.service.impl;
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
@@ -61,7 +63,7 @@ class ManagerServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.addNewManager(request))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Email registered");
     }
 
@@ -89,7 +91,7 @@ class ManagerServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.deleteManager(managerId))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageMatching("Manager with id " + managerId + " doesn't exist");
     }
 
@@ -124,7 +126,7 @@ class ManagerServiceImplTest {
         //Then
         assertThatThrownBy(() -> underTest.updateManager(managerId, "name",
                 "lastName", "email@email.com"))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageMatching("Manager with id " + managerId + " doesn't exist");
     }
 
@@ -154,7 +156,7 @@ class ManagerServiceImplTest {
         //Then
         assertThatThrownBy(() -> underTest.updateManager(managerId, "name",
                 "lastName", "email@email.com"))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Email registered");
 
         verify(managerRepository, never()).save(any());

@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -38,7 +39,7 @@ public class PawnBranchServiceImpl implements PawnBranchService {
             pawnBranchRepository.save(branch);
         }
         else {
-            throw new NoSuchElementException("Pawn shop not found");
+            throw new EntityNotFoundException("Pawn shop not found");
         }
 
     }
@@ -52,7 +53,7 @@ public class PawnBranchServiceImpl implements PawnBranchService {
             pawnBranchRepository.delete(branch);
         }
         else {
-            throw new NoSuchElementException("Pawn shop not found");
+            throw new EntityNotFoundException("Pawn shop not found");
         }
         pawnBranchRepository.deleteById(categoryId);
     }

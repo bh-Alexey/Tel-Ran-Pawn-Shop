@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,11 +14,7 @@ import us.telran.pawnshop.service.LoanOrderService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
-import java.time.temporal.ChronoUnit;
 import java.util.List;
-import java.util.NoSuchElementException;
-import java.util.Optional;
 
 import static us.telran.pawnshop.entity.enums.OrderType.*;
 
@@ -40,6 +37,19 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     @Value("${pawnshop.division.scale}")
     private int divisionScale;
 
+
+    private Loan getLoanFromDB(Long loanId){
+        return loanRepository.findById(loanId)
+                .orElseThrow(() -> new EntityNotFoundException("Loan not found"));
+    }
+
+    @Override
+    public BigDecimal giveRansomAmount(Long loanId) {
+        Loan loan = getLoanFromDB(loanId);
+        return loan.getRansomAmount();
+    }
+
+
     @Override
     @Transactional
     public void createLoanReceiptOrder(LoanOrderRequest loanOrderRequest) {
@@ -47,11 +57,29 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         createIncomeCashOperation(loanOrder);
     }
 
-    @Override
-    @Transactional
-    public void createLoanExpenseOrder(Loan loan) {
-        LoanOrder loanOrder = createLoanOrder(loan, EXPENSE);
-        createExpenseCashOperation(loanOrder);
+    private void createIncomeCashOperation(LoanOrder loanOrder) {
+
+        CashOperation cashOperation = buildCashOperation(loanOrder);
+
+        PawnBranch pawnBranch = getCurrentBranch();
+        cashOperation.setPawnBranch(pawnBranch);
+        pawnBranch.setBalance(pawnBranch.getBalance().add(cashOperation.getOperationAmount()));
+        cashOperation.setDescription("Receipt order#" + loanOrder.getOrderId() +
+                " for loanId " + loanOrder.getLoan().getLoanId());
+
+        cashOperationRepository.save(cashOperation);
+    }
+
+    private PawnBranch getCurrentBranch() {
+        return pawnBranchRepository.findByAddress(currentPawnShop)
+                .orElseThrow(() -> new EntityNotFoundException("No PawnBranch found with the address."));
+    }
+
+    private CashOperation buildCashOperation(LoanOrder loanOrder) {
+        CashOperation cashOperation = new CashOperation();
+        cashOperation.setOrderType(loanOrder.getOrderType());
+        cashOperation.setOperationAmount(loanOrder.getOrderAmount());
+        return cashOperation;
     }
 
     private LoanOrder createLoanOrder(Loan loan, OrderType orderType) {
@@ -62,13 +90,13 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
         return loanOrderRepository.save(loanOrder);
     }
-    private CashOperation buildCashOperation(LoanOrder loanOrder) {
-        CashOperation cashOperation = new CashOperation();
-        cashOperation.setOrderType(loanOrder.getOrderType());
-        cashOperation.setOperationAmount(loanOrder.getOrderAmount());
-        return cashOperation;
-    }
 
+    @Override
+    @Transactional
+    public void createLoanExpenseOrder(Loan loan) {
+        LoanOrder loanOrder = createLoanOrder(loan, EXPENSE);
+        createExpenseCashOperation(loanOrder);
+    }
 
     private void createExpenseCashOperation(LoanOrder loanOrder) {
 
@@ -83,39 +111,7 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         cashOperationRepository.save(cashOperation);
     }
 
-    private void createIncomeCashOperation(LoanOrder loanOrder) {
 
-        CashOperation cashOperation = buildCashOperation(loanOrder);
-
-        PawnBranch pawnBranch = getCurrentBranch();
-        cashOperation.setPawnBranch(pawnBranch);
-        pawnBranch.setBalance(pawnBranch.getBalance().add(cashOperation.getOperationAmount()));
-        cashOperation.setDescription("Receipt order#" + loanOrder.getOrderId() +
-                 " for loanId " + loanOrder.getLoan().getLoanId());
-
-        cashOperationRepository.save(cashOperation);
-
-    }
-
-
-    private PawnBranch getCurrentBranch() {
-        return pawnBranchRepository.findByAddress(currentPawnShop)
-                .orElseThrow(() -> new NoSuchElementException("No PawnBranch found with the address."));
-    }
-
-    private Loan getLoanFromDB(Long loanId){
-        return loanRepository.findById(loanId)
-                .orElseThrow(() -> new RuntimeException("Loan not found"));
-    }
-
-    private Percentage findInterest(LoanProlongationRequest loanProlongationRequest){
-        return percentageRepository.findByTerm(loanProlongationRequest.getLoanTerm())
-                .orElseThrow(() -> new RuntimeException("Can't find necessary data"));
-    }
-
-    private BigDecimal calculateProlongationAmount(Loan loan){
-        return loan.getRansomAmount().subtract(loan.getLoanAmount());
-    }
 
     @Override
     @Transactional
@@ -131,12 +127,19 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         updateLoan(loanOrder.getLoan(), loanProlongationRequest);
     }
 
+    private BigDecimal calculateProlongationAmount(Loan loan){
+        return loan.getRansomAmount().subtract(loan.getLoanAmount());
+    }
+
     public BigDecimal getProlongationAmount(LoanProlongationRequest loanProlongationRequest) {
         Loan loan = getLoanFromDB(loanProlongationRequest.getLoanId());
         return calculateProlongationAmount(loan);
     }
 
-
+    private Percentage findInterest(LoanProlongationRequest loanProlongationRequest){
+        return percentageRepository.findByTerm(loanProlongationRequest.getLoanTerm())
+                .orElseThrow(() -> new EntityNotFoundException("Can't find necessary data"));
+    }
     private void updateLoan(Loan loan, LoanProlongationRequest loanProlongationRequest){
         loan.setTerm(loanProlongationRequest.getLoanTerm());
         Percentage percentage = findInterest(loanProlongationRequest);
@@ -152,9 +155,6 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         return loanOrderRepository.findAll();
     }
 
-    private BigDecimal getRansomAmount(Long loanId) {
-        Loan loan = getLoanFromDB(loanId);
-        return loan.getRansomAmount();
-    }
+
 
 }

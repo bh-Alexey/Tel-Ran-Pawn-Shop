@@ -1,12 +1,15 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.transaction.IllegalTransactionStateException;
 import us.telran.pawnshop.dto.TransferRequest;
+import us.telran.pawnshop.entity.CashOperation;
 import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.repository.PawnBranchRepository;
 import us.telran.pawnshop.service.CashOperationService;
@@ -28,6 +31,9 @@ class TransferServiceImplTest {
     @Mock
     private PawnBranchRepository pawnBranchRepository;
 
+    @Mock
+    private CashOperationService cashOperationService;
+
     private PawnBranch branchSender;
     private PawnBranch branchRecipient;
     private TransferRequest transferRequest;
@@ -44,6 +50,7 @@ class TransferServiceImplTest {
         transferRequest.setFromBranchId(1L);
         transferRequest.setToBranchId(2L);
         transferRequest.setTransferAmount(new BigDecimal("50"));
+
     }
 
     @Test
@@ -76,7 +83,7 @@ class TransferServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.cashTransfer(transferRequest))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Recipient branch not found");
     }
 
@@ -90,7 +97,7 @@ class TransferServiceImplTest {
                 .thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> underTest.cashTransfer(transferRequest))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Sender branch not found");
     }
 
@@ -107,7 +114,7 @@ class TransferServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.cashTransfer(transferRequest))
-                .isInstanceOf(RuntimeException.class)
+                .isInstanceOf(IllegalTransactionStateException.class)
                 .hasMessageContaining("No enough money for the transfer");
     }
 }

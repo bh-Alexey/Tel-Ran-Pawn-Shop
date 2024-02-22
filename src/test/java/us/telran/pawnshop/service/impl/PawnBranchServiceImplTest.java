@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,7 +73,7 @@ class PawnBranchServiceImplTest {
         when(pawnBranchRepository.findById(3L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> underTest.updateBranch(3L, anyString()))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageMatching("Pawn shop not found");
 
         verify(pawnBranchRepository, never()).save(any());
@@ -97,7 +98,7 @@ class PawnBranchServiceImplTest {
         when(pawnBranchRepository.findById(3L)).thenReturn(Optional.empty());
 
         assertThatThrownBy(() -> underTest.deleteBranch(3L))
-                .isInstanceOf(NoSuchElementException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageMatching("Pawn shop not found");
 
         verify(pawnBranchRepository, never()).delete(any());

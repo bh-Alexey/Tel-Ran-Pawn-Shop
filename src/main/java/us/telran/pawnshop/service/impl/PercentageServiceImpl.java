@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -74,7 +75,7 @@ public class PercentageServiceImpl implements PercentageService {
     private void checkRequest(LoanTerm term) {
         percentageRepository.findByTerm(term)
                 .ifPresent(exception -> {
-                    throw new IllegalStateException("Percentage for this term introduced");
+                    throw new EntityExistsException("Percentage for this term introduced");
                 });
     }
 
@@ -90,13 +91,18 @@ public class PercentageServiceImpl implements PercentageService {
     }
 
     @Override
-    public void updatePercentage(Long percentageId, int period, BigDecimal interest) {
-
+    @Transactional
+    public void updatePercentage(Long percentageId, BigDecimal interest) {
+        Percentage percentage = percentageRepository.findById(percentageId)
+                .orElseThrow(() -> new EntityNotFoundException("Percentage with id " + percentageId + " not found"));
+        percentage.setInterest(interest);
     }
 
     @Override
+    @Transactional
     public void deletePercentage(Long percentageId) {
-
+        percentageRepository.findById(percentageId)
+                .orElseThrow(() -> new EntityNotFoundException("Percentage with id " + percentageId + " not found" ));
+        percentageRepository.deleteById(percentageId);
     }
-
 }

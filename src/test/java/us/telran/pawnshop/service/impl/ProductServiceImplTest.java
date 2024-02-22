@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import org.assertj.core.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -72,7 +74,7 @@ class ProductServiceImplTest {
         Throwable thrown = catchThrowable(() -> underTest.addNewProduct(creationRequest));
 
         Assertions.assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Product presented");
 
         verify(productRepository, times(1)).findByProductName(creationRequest.getProductName());
@@ -118,17 +120,16 @@ class ProductServiceImplTest {
         //Given
         Long productId = 1L;
         String productName = "Updated Product";
-        ProductStatus productStatus = INACTIVE;
         BigDecimal interestRate = new BigDecimal("5");
 
         //When
         //Then
         when(productRepository.findById(productId)).thenReturn(Optional.empty());
 
-        Throwable thrown = catchThrowable(() -> underTest.updateProduct(productId, productName, productStatus, interestRate));
+        Throwable thrown = catchThrowable(() -> underTest.updateProduct(productId, productName, INACTIVE, interestRate));
 
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Product with id " + productId + " doesn't exist");
     }
 

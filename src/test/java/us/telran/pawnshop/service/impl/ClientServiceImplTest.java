@@ -107,7 +107,7 @@ class ClientServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.addNewRealClient(request))
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Client already registered with id " + existingClient.getClientId());
     }
 
@@ -191,7 +191,7 @@ class ClientServiceImplTest {
         assertThatThrownBy(() -> {
             underTest.updateClient(clientId, "New_FirstName", "New_LastName", LocalDate.now().minusYears(19),
                     existingEmail, "New_Address");
-        }).isInstanceOf(IllegalStateException.class).hasMessageContaining("Email registered");
+        }).isInstanceOf(EntityExistsException.class).hasMessageContaining("Email registered");
     }
 
     @Test

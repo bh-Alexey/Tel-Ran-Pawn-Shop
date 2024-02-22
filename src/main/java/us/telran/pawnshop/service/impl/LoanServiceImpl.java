@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityNotFoundException;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -41,13 +42,13 @@ public class LoanServiceImpl implements LoanService {
     public void newLoan(LoanCreationRequest loanCreationRequest) {
 
         Pledge pledge = pledgeRepository.findById(loanCreationRequest.getPledgeId())
-                .orElseThrow(() -> new IllegalStateException("Pledge not found"));
+                .orElseThrow(() -> new EntityNotFoundException("Pledge not found"));
 
         Loan loan = new Loan();
         loan.setPledge(pledge);
 
         if (loanCreationRequest.getCreditAmount().compareTo(pledge.getEstimatedPrice()) > 0) {
-            throw new IllegalStateException("Amount can't higher than " + pledge.getEstimatedPrice());
+            throw new IllegalStateException("Amount can't be higher than " + pledge.getEstimatedPrice());
         } else {
             loan.setLoanAmount(loanCreationRequest.getCreditAmount());
         }
@@ -78,13 +79,8 @@ public class LoanServiceImpl implements LoanService {
 
     @Override
     public Loan getLoanById(Long loanId) {
-        Optional<Loan> loanOptional = loanRepository.findById(loanId);
-        if (loanOptional.isPresent()) {
-            return loanOptional.get();
-        }
-        else {
-            throw new IllegalStateException("Loan with id " + loanId + " doesn't exist");
-        }
+        return loanRepository.findById(loanId)
+                .orElseThrow(() -> new EntityNotFoundException("Loan with id " + loanId + " doesn't exist"));
     }
 
     @Override
@@ -96,7 +92,7 @@ public class LoanServiceImpl implements LoanService {
                              LoanStatus status
     ) {
         Loan loan = loanRepository.findById(loanId)
-                .orElseThrow(() -> new IllegalStateException("Credit with id " + loanId + " doesn't exist"));
+                .orElseThrow(() -> new EntityNotFoundException("Credit with id " + loanId + " doesn't exist"));
 
         loan.setLoanAmount(loanAmount);
         loan.setRansomAmount(ransomAmount);
@@ -105,11 +101,10 @@ public class LoanServiceImpl implements LoanService {
     }
 
     @Override
+    @Transactional
     public void deleteLoan(Long loanId) {
-        boolean exists = loanRepository.existsById(loanId);
-        if (!exists) {
-            throw new IllegalStateException("Loan with id " + loanId + " doesn't exist");
-        }
+        loanRepository.findById(loanId)
+                .orElseThrow(() -> new EntityNotFoundException("Loan with id " + loanId + " doesn't exist"));
         loanRepository.deleteById(loanId);
     }
 

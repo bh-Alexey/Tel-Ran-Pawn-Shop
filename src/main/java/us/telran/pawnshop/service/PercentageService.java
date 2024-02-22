@@ -12,7 +12,9 @@ public interface PercentageService {
 
     List<Percentage> getInterestGrid();
 
-    void updatePercentage(Long percentageId, int period, BigDecimal interest);
+
+    void updatePercentage(Long percentageId, BigDecimal interest);
+
 
     void deletePercentage(Long percentageId);
 }

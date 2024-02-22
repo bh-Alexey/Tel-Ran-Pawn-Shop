@@ -1,5 +1,7 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
+import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,7 +31,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         Optional<Manager> managerOptional = managerRepository.findManagerByEmail(managerCreationRequest.getEmail());
         if (managerOptional.isPresent()) {
-            throw new IllegalStateException("Email registered");
+            throw new EntityExistsException("Email registered");
         }
 
         Manager manager = new Manager();
@@ -46,7 +48,7 @@ public class ManagerServiceImpl implements ManagerService {
 
         boolean exists = managerRepository.existsById(managerId);
         if (!exists) {
-            throw new IllegalStateException("Manager with id " + managerId + " doesn't exist");
+            throw new EntityNotFoundException("Manager with id " + managerId + " doesn't exist");
         }
         managerRepository.deleteById(managerId);
     }
@@ -58,7 +60,7 @@ public class ManagerServiceImpl implements ManagerService {
                              String lastName,
                              String email) {
         Manager manager = managerRepository.findById(managerId)
-                .orElseThrow(() -> new IllegalStateException("Manager with id " + managerId + " doesn't exist"));
+                .orElseThrow(() -> new EntityNotFoundException("Manager with id " + managerId + " doesn't exist"));
 
         if (firstName != null
                    && !firstName.isEmpty()
@@ -80,7 +82,7 @@ public class ManagerServiceImpl implements ManagerService {
         ) {
             Optional<Manager> managerOptional = managerRepository.findManagerByEmail(email);
             if (managerOptional.isPresent()) {
-                throw new IllegalStateException("Email registered");
+                throw new EntityExistsException("Email registered");
             }
             manager.setEmail(email);
         }
