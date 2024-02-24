@@ -58,8 +58,6 @@ class PledgeServiceImplTest {
         request.setCategoryId(1L);
         request.setClientId(1L);
         request.setProductId(1L);
-        request.setManagerId(1L);
-
 
         Client client = new Client();
         Product product = new Product();
@@ -71,7 +69,6 @@ class PledgeServiceImplTest {
         given(clientRepository.findById(request.getClientId())).willReturn(Optional.of(client));
         given(productRepository.findById(request.getProductId())).willReturn(Optional.of(product));
         given(pledgeCategoryRepository.findById(request.getCategoryId())).willReturn(Optional.of(category));
-        given(managerRepository.findById(request.getManagerId())).willReturn(Optional.of(manager));
         given(preciousMetalPriceRepository.findByPurity(request.getPurity())).willReturn(Optional.of(metalPrice));
 
         // When

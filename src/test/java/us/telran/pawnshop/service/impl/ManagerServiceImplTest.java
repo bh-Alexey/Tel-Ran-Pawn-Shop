@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import us.telran.pawnshop.dto.ManagerCreationRequest;
 import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.repository.ManagerRepository;
@@ -23,6 +24,9 @@ class ManagerServiceImplTest {
 
     @Mock
     private ManagerRepository managerRepository;
+
+    @Mock
+    private PasswordEncoder passwordEncoder;
 
     @InjectMocks
     private ManagerServiceImpl underTest;
@@ -42,8 +46,10 @@ class ManagerServiceImplTest {
         String email = "email@email.com";
         ManagerCreationRequest request = new ManagerCreationRequest();
         request.setEmail(email);
+        request.setPassword("some password");
 
         //When
+        when(passwordEncoder.encode(any())).thenReturn("encodedPassword");
         when(managerRepository.findManagerByEmail(email)).thenReturn(Optional.empty());
 
         underTest.addNewManager(request);

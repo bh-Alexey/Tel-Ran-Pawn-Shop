@@ -10,7 +10,6 @@ import java.math.BigDecimal;
 public class PledgeCreationRequest {
 
     private Long clientId;
-    private Long managerId;
     private Long productId;
     private Long categoryId;
     private ItemType item;

@@ -8,6 +8,7 @@ import us.telran.pawnshop.dto.PledgeCreationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.repository.*;
+import us.telran.pawnshop.security.SecurityUtils;
 import us.telran.pawnshop.service.PledgeService;
 
 import java.util.List;
@@ -26,6 +27,8 @@ public class PledgeServiceImpl implements PledgeService {
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
     private final ProductRepository productRepository;
 
+    private SecurityUtils securityUtils;
+    Long currentManagerId = SecurityUtils.getCurrentManagerId();
 
     @Override
     @Transactional
@@ -39,11 +42,11 @@ public class PledgeServiceImpl implements PledgeService {
         PledgeCategory category = pledgeCategoryRepository.findById(pledgeCreationRequest.getCategoryId())
                 .orElseThrow(() -> new EntityNotFoundException("Category not identified"));
 
-        Manager manager = managerRepository.findById(pledgeCreationRequest.getManagerId())
-                .orElseThrow(() -> new EntityNotFoundException("Manager has not been chosen"));
-
         PreciousMetalPrice metalPrice = preciousMetalPriceRepository.findByPurity(pledgeCreationRequest.getPurity())
                 .orElseThrow(() -> new EntityNotFoundException("Price not found"));
+
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
 
         Pledge pledge = new Pledge();
         pledge.setClient(client);

@@ -3,6 +3,7 @@ package us.telran.pawnshop.service.impl;
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.dto.ManagerCreationRequest;
@@ -19,7 +20,9 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ManagerServiceImpl implements ManagerService {
 
-    public final ManagerRepository managerRepository;
+    private final ManagerRepository managerRepository;
+    private final PasswordEncoder passwordEncoder;
+
     @Override
     public List<Manager> getManagers() {
         return managerRepository.findAll();
@@ -38,7 +41,9 @@ public class ManagerServiceImpl implements ManagerService {
         manager.setFirstName(managerCreationRequest.getFirstName());
         manager.setLastName(managerCreationRequest.getLastName());
         manager.setEmail(managerCreationRequest.getEmail());
+        manager.setPassword(passwordEncoder.encode(managerCreationRequest.getPassword()));
         manager.setManagerStatus(managerCreationRequest.getManagerStatus());
+
         managerRepository.save(manager);
     }
 

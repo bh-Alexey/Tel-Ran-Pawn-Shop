@@ -6,14 +6,15 @@ import org.springframework.stereotype.Service;
 import us.telran.pawnshop.dto.CashOperationRequest;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.CashOperation;
+import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.entity.enums.OrderType;
 import us.telran.pawnshop.repository.CashOperationRepository;
 import us.telran.pawnshop.repository.PawnBranchRepository;
+import us.telran.pawnshop.security.SecurityUtils;
 import us.telran.pawnshop.service.CashOperationService;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 @RequiredArgsConstructor
@@ -21,6 +22,11 @@ public class CashOperationServiceImpl implements CashOperationService {
 
     private final CashOperationRepository cashOperationRepository;
     private final PawnBranchRepository pawnBranchRepository;
+    private final PawnBranch currentBranch;
+
+    private SecurityUtils securityUtils;
+    Long currentManagerId = SecurityUtils.getCurrentManagerId();
+
 
     @Override
     public List<CashOperation> getOperations() {
@@ -32,14 +38,20 @@ public class CashOperationServiceImpl implements CashOperationService {
     public void collectCashToBranch(TransferRequest transferRequest) {
         CashOperation cashOperation = new CashOperation();
 
-        Optional<PawnBranch> pawnBranchOptional = pawnBranchRepository.findById(transferRequest.getFromBranchId());
-        if (pawnBranchOptional.isPresent()) {
-            PawnBranch pawnBranch = pawnBranchOptional.get();
-            cashOperation.setPawnBranch(pawnBranch);
-        }
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
+        cashOperation.setPawnBranch(currentBranch);
         cashOperation.setOrderType(OrderType.EXPENSE);
         cashOperation.setOperationAmount(transferRequest.getTransferAmount());
-        cashOperation.setDescription("Collect cash to Pawn branch " + transferRequest.getToBranchId());
+        String pawnBranchRecipient = pawnBranchRepository
+                .findById(transferRequest.getToBranchId())
+                .map(PawnBranch::getAddress)
+                .orElse("Recipient");
+
+        cashOperation.setDescription("Collect cash to Pawn branch " + pawnBranchRecipient);
+
         cashOperationRepository.save(cashOperation);
 
     }
@@ -49,52 +61,54 @@ public class CashOperationServiceImpl implements CashOperationService {
     public void replenishCashFromBranch(TransferRequest transferRequest) {
         CashOperation cashOperation = new CashOperation();
 
-        Optional<PawnBranch> pawnBranchOptional = pawnBranchRepository.findById(transferRequest.getToBranchId());
-        if (pawnBranchOptional.isPresent()) {
-            PawnBranch pawnBranch = pawnBranchOptional.get();
-            cashOperation.setPawnBranch(pawnBranch);
-        }
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
+        cashOperation.setPawnBranch(currentBranch);
         cashOperation.setOrderType(OrderType.INCOME);
         cashOperation.setOperationAmount(transferRequest.getTransferAmount());
-        cashOperation.setDescription("Replenish cash from Pawn branch " + transferRequest.getFromBranchId());
+        String pawnBranchSender = pawnBranchRepository
+                .findById(transferRequest.getFromBranchId())
+                .map(PawnBranch::getAddress)
+                .orElse("Sender");
+        cashOperation.setDescription("Replenish cash from Pawn branch " + pawnBranchSender);
+
         cashOperationRepository.save(cashOperation);
     }
 
     @Override
+    @Transactional
     public void replenishCash(CashOperationRequest cashOperationRequest) {
         CashOperation cashOperation = new CashOperation();
 
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
         cashOperation.setOrderType(OrderType.INCOME);
         cashOperation.setOperationAmount(cashOperationRequest.getOperationAmount());
-
-        Optional<PawnBranch> pawnBranchOptional = pawnBranchRepository
-                .findById(cashOperationRequest.getBranchId());
-        if (pawnBranchOptional.isPresent()) {
-            PawnBranch pawnBranch = pawnBranchOptional.get();
-            cashOperation.setPawnBranch(pawnBranch);
-            pawnBranch.setBalance(pawnBranch.getBalance().add(cashOperation.getOperationAmount()));
-        }
-
         cashOperation.setDescription("Replenish cash from Region Director");
+        currentBranch.setBalance(currentBranch.getBalance().add(cashOperation.getOperationAmount()));
+
         cashOperationRepository.save(cashOperation);
     }
 
     @Override
+    @Transactional
     public void collectCash(CashOperationRequest cashOperationRequest) {
         CashOperation cashOperation = new CashOperation();
 
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
         cashOperation.setOrderType(OrderType.EXPENSE);
         cashOperation.setOperationAmount(cashOperationRequest.getOperationAmount());
-
-        Optional<PawnBranch> pawnBranchOptional = pawnBranchRepository
-                .findById(cashOperationRequest.getBranchId());
-        if (pawnBranchOptional.isPresent()) {
-            PawnBranch pawnBranch = pawnBranchOptional.get();
-            cashOperation.setPawnBranch(pawnBranch);
-            pawnBranch.setBalance(pawnBranch.getBalance().subtract(cashOperation.getOperationAmount()));
-        }
-
         cashOperation.setDescription("Replenish cash for Region Director");
+
+        currentBranch.setBalance(currentBranch.getBalance().subtract(cashOperation.getOperationAmount()));
+
         cashOperationRepository.save(cashOperation);
     }
 }

@@ -10,6 +10,7 @@ import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.OrderType;
 import us.telran.pawnshop.repository.*;
+import us.telran.pawnshop.security.SecurityUtils;
 import us.telran.pawnshop.service.LoanOrderService;
 
 import java.math.BigDecimal;
@@ -27,6 +28,7 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     private final CashOperationRepository cashOperationRepository;
     private final PawnBranchRepository pawnBranchRepository;
     private final PercentageRepository percentageRepository;
+    private final PawnBranch currentBranch;
 
     @Value("${pawnshop.address}")
     private String currentPawnShop;
@@ -37,6 +39,8 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     @Value("${pawnshop.division.scale}")
     private int divisionScale;
 
+    private SecurityUtils securityUtils;
+    Long currentManagerId = SecurityUtils.getCurrentManagerId();
 
     private Loan getLoanFromDB(Long loanId){
         return loanRepository.findById(loanId)
@@ -49,7 +53,6 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         return loan.getRansomAmount();
     }
 
-
     @Override
     @Transactional
     public void createLoanReceiptOrder(LoanOrderRequest loanOrderRequest) {
@@ -61,18 +64,16 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
-        PawnBranch pawnBranch = getCurrentBranch();
-        cashOperation.setPawnBranch(pawnBranch);
-        pawnBranch.setBalance(pawnBranch.getBalance().add(cashOperation.getOperationAmount()));
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
+        cashOperation.setPawnBranch(currentBranch);
+        currentBranch.setBalance(currentBranch.getBalance().add(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Receipt order#" + loanOrder.getOrderId() +
                 " for loanId " + loanOrder.getLoan().getLoanId());
 
         cashOperationRepository.save(cashOperation);
-    }
-
-    private PawnBranch getCurrentBranch() {
-        return pawnBranchRepository.findByAddress(currentPawnShop)
-                .orElseThrow(() -> new EntityNotFoundException("No PawnBranch found with the address."));
     }
 
     private CashOperation buildCashOperation(LoanOrder loanOrder) {
@@ -102,16 +103,17 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
-        PawnBranch pawnBranch = getCurrentBranch();
-        cashOperation.setPawnBranch(pawnBranch);
-        pawnBranch.setBalance(pawnBranch.getBalance().subtract(cashOperation.getOperationAmount()));
+        Manager manager = new Manager();
+        manager.setManagerId(currentManagerId);
+
+        cashOperation.setManager(manager);
+        cashOperation.setPawnBranch(currentBranch);
+        currentBranch.setBalance(currentBranch.getBalance().subtract(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Expense order#" + loanOrder.getOrderId() +
                 " for loanId " + loanOrder.getLoan().getLoanId());
 
         cashOperationRepository.save(cashOperation);
     }
-
-
 
     @Override
     @Transactional
@@ -154,7 +156,5 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     public List<LoanOrder> getAllLoanOrders() {
         return loanOrderRepository.findAll();
     }
-
-
 
 }

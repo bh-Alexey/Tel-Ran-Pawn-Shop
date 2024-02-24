@@ -1,6 +1,19 @@
 package us.telran.pawnshop.entity.enums;
 
-public enum ManagerStatus {
-    EXPERT_APPRAISER,
-    REGION_DIRECTOR
+import us.telran.pawnshop.security.RoleProvider;
+
+public enum ManagerStatus implements RoleProvider {
+    EXPERT_APPRAISER {
+        @Override
+        public String getRole() {
+            return "ROLE_MANAGER";
+        }
+    },
+    REGION_DIRECTOR {
+        @Override
+        public String getRole() {
+            return "ROLE_DIRECTOR";
+        }
+    };
+
 }

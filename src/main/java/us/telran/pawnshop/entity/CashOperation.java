@@ -38,6 +38,11 @@ public class CashOperation {
     @JoinColumn(name = "branch_id")
     private PawnBranch pawnBranch;
 
+    @ManyToOne
+    @JoinColumn(name = "manager_id")
+    private Manager manager;
+
+
     @Column(name = "order_type")
     @Enumerated(STRING)
     private OrderType orderType;

@@ -39,6 +39,7 @@ public class PreciousMetalPriceServiceImpl implements PreciousMetalPriceService 
                     .getReferenceById(preciousMetalPriceCreationRequest.getCategoryId()));
             newPrice.setPurity(preciousMetalPriceCreationRequest.getPurity());
             newPrice.setMetalPrice(preciousMetalPriceCreationRequest.getMetalPrice());
+
             preciousMetalPriceRepository.save(newPrice);
         }
     }

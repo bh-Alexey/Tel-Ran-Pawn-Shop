@@ -8,7 +8,6 @@ import java.math.BigDecimal;
 @Data
 public class CashOperationRequest {
 
-    private Long branchId;
     private OrderType orderType;
     private BigDecimal operationAmount;
 }

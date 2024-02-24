@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    url: jdbc:postgresql://bh-alexey:5432/pawnshop
+    username: bh-alexey
+    password: bh-alexey@admin
+    driverClassName: org.postgresql.Driver
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        show_sql: true
+server:
+  error:
+    include-message: always

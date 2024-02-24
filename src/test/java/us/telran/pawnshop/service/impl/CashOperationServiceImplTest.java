@@ -17,8 +17,11 @@ import us.telran.pawnshop.repository.PawnBranchRepository;
 import java.math.BigDecimal;
 import java.util.Optional;
 
+import static java.math.BigDecimal.valueOf;
+import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.BDDMockito.then;
 import static org.mockito.Mockito.*;
 import static org.mockito.Mockito.verify;
 
@@ -27,6 +30,9 @@ class CashOperationServiceImplTest {
 
     @Mock
     private CashOperationRepository cashOperationRepository;
+
+    @Mock
+    private PawnBranch currentBranch;
 
     @Mock
     private PawnBranchRepository pawnBranchRepository;
@@ -56,22 +62,21 @@ class CashOperationServiceImplTest {
         transferRequest.setTransferAmount(transferAmount);
 
         PawnBranch pawnBranch = new PawnBranch();
-        when(pawnBranchRepository.findById(fromBranchId)).thenReturn(Optional.of(pawnBranch));
+        pawnBranch.setAddress("Address");
 
         //When
+        when(pawnBranchRepository.findById(transferRequest.getToBranchId())).thenReturn(Optional.of(pawnBranch));
+
         underTest.collectCashToBranch(transferRequest);
 
         //Then
-        verify(pawnBranchRepository, times(1)).findById(fromBranchId);
-        verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-
-        ArgumentCaptor<CashOperation> argumentCaptor = ArgumentCaptor.forClass(CashOperation.class);
-
-        verify(cashOperationRepository).save(argumentCaptor.capture());
-        assertEquals(OrderType.EXPENSE, argumentCaptor.getValue().getOrderType());
-        assertEquals(transferAmount, argumentCaptor.getValue().getOperationAmount());
-        assertEquals("Collect cash to Pawn branch " + toBranchId, argumentCaptor.getValue().getDescription());
-        assertEquals(pawnBranch, argumentCaptor.getValue().getPawnBranch());
+        then(cashOperationRepository).should().save(argThat(cashOperation -> {
+            assertThat(cashOperation.getPawnBranch()).isEqualTo(currentBranch);
+            assertThat(cashOperation.getOrderType()).isEqualTo(OrderType.EXPENSE);
+            assertThat(cashOperation.getOperationAmount()).isEqualTo(transferRequest.getTransferAmount());
+            assertThat(cashOperation.getDescription()).isEqualTo("Collect cash to Pawn branch " + pawnBranch.getAddress());
+            return true;
+        }));
     }
 
     @Test
@@ -87,85 +92,64 @@ class CashOperationServiceImplTest {
         transferRequest.setTransferAmount(transferAmount);
 
         PawnBranch pawnBranch = new PawnBranch();
-        when(pawnBranchRepository.findById(toBranchId)).thenReturn(Optional.of(pawnBranch));
+        pawnBranch.setAddress("Address");
 
         //When
+        when(pawnBranchRepository.findById(transferRequest.getFromBranchId())).thenReturn(Optional.of(pawnBranch));
+
         underTest.replenishCashFromBranch(transferRequest);
 
         //Then
-        verify(pawnBranchRepository, times(1)).findById(toBranchId);
-        verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-
-        ArgumentCaptor<CashOperation> argumentCaptor = ArgumentCaptor.forClass(CashOperation.class);
-
-        verify(cashOperationRepository).save(argumentCaptor.capture());
-
-        assertEquals(OrderType.INCOME, argumentCaptor.getValue().getOrderType());
-        assertEquals(transferAmount, argumentCaptor.getValue().getOperationAmount());
-        assertEquals("Replenish cash from Pawn branch " + fromBranchId, argumentCaptor.getValue().getDescription());
-        assertEquals(pawnBranch, argumentCaptor.getValue().getPawnBranch());
+        then(cashOperationRepository).should().save(argThat(cashOperation -> {
+            assertThat(cashOperation.getPawnBranch()).isEqualTo(currentBranch);
+            assertThat(cashOperation.getOrderType()).isEqualTo(OrderType.INCOME);
+            assertThat(cashOperation.getOperationAmount()).isEqualTo(transferRequest.getTransferAmount());
+            assertThat(cashOperation.getDescription()).isEqualTo("Replenish cash from Pawn branch " + pawnBranch.getAddress());
+            return true;
+        }));
     }
 
     @Test
     void canReplenishCash() {
         //Given
-        Long branchId = 1L;
+        BigDecimal initialBalance = new BigDecimal("1500.0");
         BigDecimal operationAmount = new BigDecimal("500.0");
 
         CashOperationRequest cashOperationRequest = new CashOperationRequest();
-        cashOperationRequest.setBranchId(branchId);
         cashOperationRequest.setOperationAmount(operationAmount);
 
-        PawnBranch pawnBranch = new PawnBranch();
-        pawnBranch.setBalance(new BigDecimal("1000.0"));
-
-        when(pawnBranchRepository.findById(branchId)).thenReturn(Optional.of(pawnBranch));
 
         //When
+        when(currentBranch.getBalance()).thenReturn(initialBalance)
+                .thenReturn(initialBalance, initialBalance.add(operationAmount));
+
         underTest.replenishCash(cashOperationRequest);
 
         //Then
-        verify(pawnBranchRepository, times(1)).findById(branchId);
-        verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-
-        ArgumentCaptor<CashOperation> argumentCaptor = ArgumentCaptor.forClass(CashOperation.class);
-        verify(cashOperationRepository).save(argumentCaptor.capture());
-
-        assertEquals(OrderType.INCOME, argumentCaptor.getValue().getOrderType());
-        assertEquals(operationAmount, argumentCaptor.getValue().getOperationAmount());
-        assertEquals("Replenish cash from Region Director", argumentCaptor.getValue().getDescription());
-        assertEquals(pawnBranch, argumentCaptor.getValue().getPawnBranch());
-        assertEquals(new BigDecimal("1500.0"), pawnBranch.getBalance());
+        verify(currentBranch, times(1)).getBalance();
+        verify(currentBranch).setBalance(initialBalance.add(operationAmount));
+        verify(cashOperationRepository).save(any(CashOperation.class));
     }
 
     @Test
-    void collectCash() {
+    void canCollectCash() {
         //Given
-        Long branchId = 1L;
+        BigDecimal initialBalance = new BigDecimal("1500.0");
         BigDecimal operationAmount = new BigDecimal("500.0");
+
         CashOperationRequest cashOperationRequest = new CashOperationRequest();
-        cashOperationRequest.setBranchId(branchId);
         cashOperationRequest.setOperationAmount(operationAmount);
 
-        PawnBranch pawnBranch = new PawnBranch();
-        pawnBranch.setBalance(new BigDecimal("1000.0"));
-
-        when(pawnBranchRepository.findById(branchId)).thenReturn(Optional.of(pawnBranch));
 
         //When
-        underTest.collectCash(cashOperationRequest);
+        when(currentBranch.getBalance()).thenReturn(initialBalance)
+                .thenReturn(initialBalance, initialBalance.subtract(operationAmount));
+
+        underTest.replenishCash(cashOperationRequest);
 
         //Then
-        verify(pawnBranchRepository, times(1)).findById(branchId);
-        verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-
-        ArgumentCaptor<CashOperation> argumentCaptor = ArgumentCaptor.forClass(CashOperation.class);
-        verify(cashOperationRepository).save(argumentCaptor.capture());
-
-        assertEquals(OrderType.EXPENSE, argumentCaptor.getValue().getOrderType());
-        assertEquals(operationAmount, argumentCaptor.getValue().getOperationAmount());
-        assertEquals("Replenish cash for Region Director", argumentCaptor.getValue().getDescription());
-        assertEquals(pawnBranch, argumentCaptor.getValue().getPawnBranch());
-        assertEquals(new BigDecimal("500.0"), pawnBranch.getBalance());  // Subtracting 500 from existing 1000
+        verify(currentBranch, times(1)).getBalance();
+        verify(currentBranch).setBalance(initialBalance.add(operationAmount));
+        verify(cashOperationRepository).save(any(CashOperation.class));
     }
 }
