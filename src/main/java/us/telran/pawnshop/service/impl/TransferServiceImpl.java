@@ -23,26 +23,25 @@ public class TransferServiceImpl implements TransferService {
     @Transactional
     public void cashTransfer(TransferRequest transferRequest) {
 
-            PawnBranch fromBranch = pawnBranchRepository.findById(transferRequest.getFromBranchId())
-                    .orElseThrow(() -> new EntityNotFoundException("Sender branch not found"));
-            PawnBranch toBranch = pawnBranchRepository.findById(transferRequest.getToBranchId())
-                    .orElseThrow(() -> new EntityNotFoundException("Recipient branch not found"));
+        PawnBranch fromBranch = pawnBranchRepository.findById(transferRequest.getFromBranchId())
+                .orElseThrow(() -> new EntityNotFoundException("Sender branch not found"));
+        PawnBranch toBranch = pawnBranchRepository.findById(transferRequest.getToBranchId())
+                .orElseThrow(() -> new EntityNotFoundException("Recipient branch not found"));
 
-            if (fromBranch.getBalance().compareTo(transferRequest.getTransferAmount()) < 0) {
-                throw new IllegalTransactionStateException("No enough money for the transfer ");
-            }
-
-            fromBranch.setBalance(fromBranch.getBalance().subtract(transferRequest.getTransferAmount()));
-            pawnBranchRepository.save(fromBranch);
-
-            cashOperationService.collectCashToBranch(transferRequest);
-
-            toBranch.setBalance(toBranch.getBalance().add(transferRequest.getTransferAmount()));
-            pawnBranchRepository.save(toBranch);
-
-            cashOperationService.replenishCashFromBranch(transferRequest);
+        if (fromBranch.getBalance().compareTo(transferRequest.getTransferAmount()) < 0) {
+            throw new IllegalTransactionStateException("No enough money for the transfer ");
         }
 
+        fromBranch.setBalance(fromBranch.getBalance().subtract(transferRequest.getTransferAmount()));
+        pawnBranchRepository.save(fromBranch);
+
+        cashOperationService.collectCashToBranch(transferRequest);
+
+        toBranch.setBalance(toBranch.getBalance().add(transferRequest.getTransferAmount()));
+        pawnBranchRepository.save(toBranch);
+
+        cashOperationService.replenishCashFromBranch(transferRequest);
+    }
 }
 
 

@@ -10,7 +10,6 @@ import org.springframework.stereotype.Service;
 import us.telran.pawnshop.repository.ManagerRepository;
 
 import java.util.Collections;
-import java.util.Objects;
 
 @Service
 @RequiredArgsConstructor
@@ -20,8 +19,8 @@ public class ManagerDetailsService implements UserDetailsService {
 
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        {
-            return Objects.requireNonNull(managerRepository).findManagerByEmail(email)
+
+            return managerRepository.findManagerByEmail(email)
                     .map(manager -> new ManagerDetails(
                             manager.getManagerId(),
                             manager.getEmail(),
@@ -29,7 +28,6 @@ public class ManagerDetailsService implements UserDetailsService {
                             Collections.singletonList(new SimpleGrantedAuthority(manager.getManagerStatus().getRole()))
                     ))
                     .orElseThrow(() -> new UsernameNotFoundException("Manager not found with email: " + email));
-        }
     }
 }
 

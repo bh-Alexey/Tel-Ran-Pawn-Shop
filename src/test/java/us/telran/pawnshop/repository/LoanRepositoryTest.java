@@ -19,11 +19,11 @@ import java.time.Month;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static us.telran.pawnshop.entity.enums.ClientStatus.REGULAR;
-import static us.telran.pawnshop.entity.enums.ItemType.BRACELET;
-import static us.telran.pawnshop.entity.enums.ManagerStatus.EXPERT_APPRAISER;
-import static us.telran.pawnshop.entity.enums.PledgeStatus.PLEDGED;
-import static us.telran.pawnshop.entity.enums.ProductStatus.ACTIVE;
+import static us.telran.pawnshop.entity.enums.ClientStatus.*;
+import static us.telran.pawnshop.entity.enums.ItemType.*;
+import static us.telran.pawnshop.entity.enums.ManagerStatus.*;
+import static us.telran.pawnshop.entity.enums.PledgeStatus.*;
+import static us.telran.pawnshop.entity.enums.ProductStatus.*;
 
 
 @DataJpaTest
