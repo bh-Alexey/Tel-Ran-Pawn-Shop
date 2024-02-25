@@ -13,3 +13,8 @@ spring:
 server:
   error:
     include-message: always
+logging:
+  level:
+    org.springframework.security: DEBUG
+    org.springframework.security.web.FilterChainProxy: DEBUG
+    org.springframework.security.web.access.intercept.FilterSecurityInterceptor: DEBUG

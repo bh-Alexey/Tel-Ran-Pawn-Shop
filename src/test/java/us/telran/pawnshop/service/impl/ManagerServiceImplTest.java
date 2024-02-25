@@ -1,4 +1,5 @@
 package us.telran.pawnshop.service.impl;
+
 import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
@@ -11,11 +12,10 @@ import us.telran.pawnshop.dto.ManagerCreationRequest;
 import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.repository.ManagerRepository;
 
-import java.util.List;
 import java.util.Optional;
 
-
-import static org.assertj.core.api.Assertions.*;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -107,18 +107,22 @@ class ManagerServiceImplTest {
         String updatedFirstName = "Merry";
         String updatedLastName = "Poppins";
         String updatedEmail = "merry.poppins@email.com";
+        String updatedPassword = "password";
         Manager existingManager = new Manager();
 
         when(managerRepository.findById(anyLong())).thenReturn(Optional.of(existingManager));
         when(managerRepository.findManagerByEmail(anyString())).thenReturn(Optional.empty());
+        when(passwordEncoder.encode(updatedPassword)).thenReturn("encodedPassword");
+        existingManager.setPassword(passwordEncoder.encode(updatedPassword));
 
-        underTest.updateManager(managerId, updatedFirstName, updatedLastName, updatedEmail);
+        underTest.updateManager(managerId, updatedFirstName, updatedLastName, updatedEmail, updatedPassword);
 
         verify(managerRepository, times(1)).findById(managerId);
         verify(managerRepository, times(1)).findManagerByEmail(updatedEmail);
         assertThat(existingManager.getFirstName()).isEqualTo(updatedFirstName);
         assertThat(existingManager.getLastName()).isEqualTo(updatedLastName);
         assertThat(existingManager.getEmail()).isEqualTo(updatedEmail);
+        assertThat(existingManager.getPassword()).isEqualTo(passwordEncoder.encode(updatedPassword));
     }
 
     @Test
@@ -131,7 +135,7 @@ class ManagerServiceImplTest {
 
         //Then
         assertThatThrownBy(() -> underTest.updateManager(managerId, "name",
-                "lastName", "email@email.com"))
+                "lastName", "email@email.com", "password"))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageMatching("Manager with id " + managerId + " doesn't exist");
     }
@@ -144,6 +148,7 @@ class ManagerServiceImplTest {
         String updatedLastName = "Doe";
         String updatedEmail = "john.doe@example.com";
         String email = "email@email.com";
+        String updatedPassword = "password";
 
         Manager existingManager = new Manager();
         existingManager.setEmail(updatedEmail);
@@ -155,13 +160,13 @@ class ManagerServiceImplTest {
         //When
         when(managerRepository.findById(managerId)).thenReturn(Optional.of(existingManager));
 
-        underTest.updateManager(managerId, updatedFirstName, updatedLastName, updatedEmail);
+        underTest.updateManager(managerId, updatedFirstName, updatedLastName, updatedEmail, updatedPassword);
 
         when(managerRepository.findManagerByEmail(email)).thenReturn(Optional.of(anotherManager));
 
         //Then
         assertThatThrownBy(() -> underTest.updateManager(managerId, "name",
-                "lastName", "email@email.com"))
+                "lastName", "email@email.com", "password"))
                 .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Email registered");
 

@@ -7,7 +7,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import us.telran.pawnshop.dto.ManagerCreationRequest;
-import us.telran.pawnshop.entity.Client;
 import us.telran.pawnshop.entity.Manager;
 import us.telran.pawnshop.repository.ManagerRepository;
 import us.telran.pawnshop.service.ManagerService;
@@ -63,7 +62,9 @@ public class ManagerServiceImpl implements ManagerService {
     public void updateManager(Long managerId,
                              String firstName,
                              String lastName,
-                             String email) {
+                             String email,
+                             String password
+    ) {
         Manager manager = managerRepository.findById(managerId)
                 .orElseThrow(() -> new EntityNotFoundException("Manager with id " + managerId + " doesn't exist"));
 
@@ -90,6 +91,7 @@ public class ManagerServiceImpl implements ManagerService {
                 throw new EntityExistsException("Email registered");
             }
             manager.setEmail(email);
+            manager.setPassword(passwordEncoder.encode(password));
         }
     }
 }

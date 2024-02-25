@@ -24,13 +24,13 @@ import static jakarta.persistence.GenerationType.*;
 @Table(name = "clients")
 public class Client {
 
-    @Value("${pawnshop.ssn.origin}")
-    @Transient
-    private int ssnOrigin;
+//    @Value("${pawnshop.ssn.origin}")
+//    @Transient
+//    private int ssnOrigin;
 
-    @Value("${pawnshop.ssn.bound}")
-    @Transient
-    private int ssnBound;
+//    @Value("${pawnshop.ssn.bound}")
+//    @Transient
+//    private int ssnBound;
 
     @Id
     @SequenceGenerator(
@@ -83,10 +83,10 @@ public class Client {
     @Column(name = "updated_at")
     private Timestamp updatedAt;
 
-    @PrePersist
-    public void generateSocialSecurityNumber() {
-        this.socialSecurityNumber = ThreadLocalRandom.current().nextInt(ssnOrigin, ++ssnBound);
-    }
+//    @PrePersist
+//    public void generateSocialSecurityNumber() {
+//        this.socialSecurityNumber = ThreadLocalRandom.current().nextInt(ssnOrigin, ++ssnBound);
+//    }
 
     public Client(ClientStatus status,
                   int socialSecurityNumber,

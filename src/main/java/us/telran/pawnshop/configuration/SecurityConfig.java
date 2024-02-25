@@ -1,5 +1,6 @@
 package us.telran.pawnshop.configuration;
 
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -12,6 +13,7 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@Slf4j
 public class SecurityConfig {
 
     @Bean
@@ -19,16 +21,20 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/director/**").hasRole("DIRECTOR")
-                        .requestMatchers("/manager/**").hasAnyRole("MANAGER", "DIRECTOR")
+                        .requestMatchers("/v2/api-docs", "/v3/api-docs", "/swagger-resources/**",
+                                         "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                        .requestMatchers("/director/**","/pawn-shop/manager/**").hasRole("DIRECTOR")
+                        .requestMatchers("/client/**", "/pawn-shop/").hasAnyRole("MANAGER", "DIRECTOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form
                         .loginPage("/login")
                         .failureUrl("/login?error")
-                        .permitAll()
+                        .disable()
                 )
-                .logout(LogoutConfigurer::permitAll);
+                .logout(LogoutConfigurer::disable)
+                .httpBasic(httpBasis -> httpBasis
+                        .init(http));
 
         return http.build();
     }

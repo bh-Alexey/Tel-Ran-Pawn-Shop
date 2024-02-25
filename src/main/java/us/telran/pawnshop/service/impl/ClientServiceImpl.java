@@ -41,7 +41,7 @@ public class ClientServiceImpl implements ClientService {
         client.setFirstName(request.getFirstName());
         client.setLastName(request.getLastName());
         client.setDateOfBirth(request.getDateOfBirth());
-        client.generateSocialSecurityNumber();
+//      client.generateSocialSecurityNumber();
         client.setEmail(request.getEmail());
         client.setAddress(request.getAddress());
         client.setStatus(ClientStatus.REGULAR);

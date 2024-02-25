@@ -13,5 +13,10 @@ public interface ManagerService {
 
     void deleteManager(Long managerId);
 
-    void updateManager(Long managerId, String firstName, String lastName, String email);
+    void updateManager(Long managerId,
+                       String firstName,
+                       String lastName,
+                       String email,
+                       String password
+    );
 }
