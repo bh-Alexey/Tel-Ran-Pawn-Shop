@@ -5,7 +5,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
-import us.telran.pawnshop.dto.CashOperationRequest;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.CashOperation;
 import us.telran.pawnshop.entity.PawnBranch;
@@ -111,15 +110,11 @@ class CashOperationServiceImplTest {
         BigDecimal initialBalance = new BigDecimal("1500.0");
         BigDecimal operationAmount = new BigDecimal("500.0");
 
-        CashOperationRequest cashOperationRequest = new CashOperationRequest();
-        cashOperationRequest.setOperationAmount(operationAmount);
-
-
         //When
         when(currentBranch.getBalance()).thenReturn(initialBalance)
                 .thenReturn(initialBalance, initialBalance.add(operationAmount));
 
-        underTest.replenishCash(cashOperationRequest);
+        underTest.replenishCash(operationAmount);
 
         //Then
         verify(currentBranch, times(1)).getBalance();
@@ -133,15 +128,11 @@ class CashOperationServiceImplTest {
         BigDecimal initialBalance = new BigDecimal("1500.0");
         BigDecimal operationAmount = new BigDecimal("500.0");
 
-        CashOperationRequest cashOperationRequest = new CashOperationRequest();
-        cashOperationRequest.setOperationAmount(operationAmount);
-
-
         //When
         when(currentBranch.getBalance()).thenReturn(initialBalance)
                 .thenReturn(initialBalance, initialBalance.subtract(operationAmount));
 
-        underTest.replenishCash(cashOperationRequest);
+        underTest.replenishCash(operationAmount);
 
         //Then
         verify(currentBranch, times(1)).getBalance();

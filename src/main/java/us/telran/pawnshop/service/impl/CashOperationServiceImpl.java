@@ -3,7 +3,6 @@ package us.telran.pawnshop.service.impl;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-import us.telran.pawnshop.dto.CashOperationRequest;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.CashOperation;
 import us.telran.pawnshop.entity.Manager;
@@ -14,6 +13,7 @@ import us.telran.pawnshop.repository.PawnBranchRepository;
 import us.telran.pawnshop.security.SecurityUtils;
 import us.telran.pawnshop.service.CashOperationService;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 @Service
@@ -50,7 +50,6 @@ public class CashOperationServiceImpl implements CashOperationService {
         cashOperation.setDescription("Collect cash to Pawn branch " + pawnBranchRecipient);
 
         cashOperationRepository.save(cashOperation);
-
     }
 
     @Override
@@ -76,7 +75,7 @@ public class CashOperationServiceImpl implements CashOperationService {
 
     @Override
     @Transactional
-    public void replenishCash(CashOperationRequest cashOperationRequest) {
+    public void replenishCash(BigDecimal operationAmount) {
         CashOperation cashOperation = new CashOperation();
 
         Manager manager = new Manager();
@@ -84,7 +83,7 @@ public class CashOperationServiceImpl implements CashOperationService {
 
         cashOperation.setManager(manager);
         cashOperation.setOrderType(OrderType.INCOME);
-        cashOperation.setOperationAmount(cashOperationRequest.getOperationAmount());
+        cashOperation.setOperationAmount(operationAmount);
         cashOperation.setDescription("Replenish cash from Region Director");
         currentBranch.setBalance(currentBranch.getBalance().add(cashOperation.getOperationAmount()));
 
@@ -93,7 +92,7 @@ public class CashOperationServiceImpl implements CashOperationService {
 
     @Override
     @Transactional
-    public void collectCash(CashOperationRequest cashOperationRequest) {
+    public void collectCash(BigDecimal operationAmount) {
         CashOperation cashOperation = new CashOperation();
 
         Manager manager = new Manager();
@@ -101,7 +100,7 @@ public class CashOperationServiceImpl implements CashOperationService {
 
         cashOperation.setManager(manager);
         cashOperation.setOrderType(OrderType.EXPENSE);
-        cashOperation.setOperationAmount(cashOperationRequest.getOperationAmount());
+        cashOperation.setOperationAmount(operationAmount);
         cashOperation.setDescription("Replenish cash for Region Director");
 
         currentBranch.setBalance(currentBranch.getBalance().subtract(cashOperation.getOperationAmount()));

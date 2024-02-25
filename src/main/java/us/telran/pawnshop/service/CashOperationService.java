@@ -1,9 +1,9 @@
 package us.telran.pawnshop.service;
 
-import us.telran.pawnshop.dto.CashOperationRequest;
 import us.telran.pawnshop.dto.TransferRequest;
 import us.telran.pawnshop.entity.CashOperation;
 
+import java.math.BigDecimal;
 import java.util.List;
 
 public interface CashOperationService {
@@ -14,8 +14,8 @@ public interface CashOperationService {
 
     void replenishCashFromBranch(TransferRequest transferRequest);
 
-    void replenishCash(CashOperationRequest cashOperationRequest);
+    void replenishCash(BigDecimal operationAmount);
 
-    void collectCash(CashOperationRequest cashOperationRequest);
+    void collectCash(BigDecimal operationAmount);
 
 }
