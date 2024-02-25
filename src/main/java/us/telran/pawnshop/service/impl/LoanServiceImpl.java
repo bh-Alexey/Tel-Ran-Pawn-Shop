@@ -9,6 +9,7 @@ import us.telran.pawnshop.dto.LoanCreationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.LoanStatus;
 import us.telran.pawnshop.entity.enums.LoanTerm;
+import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.repository.LoanRepository;
 import us.telran.pawnshop.repository.PercentageRepository;
 import us.telran.pawnshop.repository.PledgeRepository;
@@ -17,7 +18,6 @@ import us.telran.pawnshop.service.LoanService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
@@ -64,6 +64,7 @@ public class LoanServiceImpl implements LoanService {
                             .multiply(BigDecimal.valueOf(loan.getTerm().getDays())))));
         }
 
+        pledge.setStatus(PledgeStatus.PLEDGED);
         loan.setStatus(LoanStatus.IN_USE);
 
         loanRepository.save(loan);

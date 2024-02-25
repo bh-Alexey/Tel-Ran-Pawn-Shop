@@ -30,7 +30,7 @@ public class LoanOrderController {
     }
 
     @GetMapping("all")
-    @Operation(summary = "SHOW ALL ORDERS", description = "Show order details for all time")
+    @Operation(summary = "ALL ORDERS", description = "Show order details for all time")
     public List<LoanOrder> getLoanOrders() {
         return loanOrderService.getAllLoanOrders();
     }

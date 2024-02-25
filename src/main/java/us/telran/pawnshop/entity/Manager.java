@@ -54,10 +54,16 @@ public class Manager {
     @Enumerated(STRING)
     private ManagerStatus managerStatus;
 
-    public Manager(String firstName, String lastName, String email, ManagerStatus managerStatus) {
+    public Manager(String firstName,
+                   String lastName,
+                   String email,
+                   String password,
+                   ManagerStatus managerStatus
+    ) {
         this.firstName = firstName;
         this.lastName = lastName;
         this.email = email;
+        this.password = password;
         this.managerStatus = managerStatus;
     }
 

@@ -38,7 +38,6 @@ class ClientRepositoryTest {
                 "430 Ocean Pkwy Apt 6B Brooklyn, NY 11218"
         );
 
-
         underTest.save(client);
 
         //when

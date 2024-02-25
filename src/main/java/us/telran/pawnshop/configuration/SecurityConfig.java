@@ -23,8 +23,22 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/v2/api-docs", "/v3/api-docs", "/swagger-resources/**",
                                          "/swagger-ui/**", "/swagger-ui.html").permitAll()
-                        .requestMatchers("/director/**","/pawn-shop/manager/**").hasRole("DIRECTOR")
-                        .requestMatchers("/client/**", "/pawn-shop/").hasAnyRole("MANAGER", "DIRECTOR")
+                        .requestMatchers("/pawn-shop/**").hasRole("DIRECTOR")
+                        .requestMatchers("/pawn-shop/clients/new",
+                                         "/pawn-shop/clients/show",
+                                         "/pawn-shop/clients/update/",
+                                         "/pawn-shop/pledge-categories/show",
+                                         "/pawn-shop/pledges/new",
+                                         "/pawn-shop/pledges/all",
+                                         "/pawn-shop/interest-grid/show",
+                                         "/pawn-shop/interest-grid/update/",
+                                         "pawn-shop/loans/new",
+                                         "/pawn-shop/loans/show",
+                                         "/pawn-shop/loan-orders/income/*",
+                                         "/pawn-shop/loan-orders/all",
+                                         "pawn-shop/price/precious-metal/show",
+                                         "/pawn-shop/price/precious-metal/change/",
+                                         "/pawn-shop/cash-operations/*").hasAnyRole("MANAGER", "DIRECTOR")
                         .anyRequest().authenticated()
                 )
                 .formLogin(form -> form

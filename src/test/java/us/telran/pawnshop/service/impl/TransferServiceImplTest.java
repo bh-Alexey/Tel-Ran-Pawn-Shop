@@ -9,7 +9,6 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.transaction.IllegalTransactionStateException;
 import us.telran.pawnshop.dto.TransferRequest;
-import us.telran.pawnshop.entity.CashOperation;
 import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.repository.PawnBranchRepository;
 import us.telran.pawnshop.service.CashOperationService;
@@ -19,9 +18,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
 import static org.assertj.core.api.AssertionsForClassTypes.assertThat;
-import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
-import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
 class TransferServiceImplTest {
@@ -69,6 +66,9 @@ class TransferServiceImplTest {
 
         assertThat(branchSender.getBalance()).isEqualByComparingTo("50");
         assertThat(branchRecipient.getBalance()).isEqualByComparingTo("100");
+
+        verify(cashOperationService).collectCashToBranch(transferRequest);
+        verify(cashOperationService).replenishCashFromBranch(transferRequest);
     }
 
     @Test

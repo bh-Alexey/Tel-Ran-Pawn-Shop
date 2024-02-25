@@ -36,9 +36,6 @@ class LoanOrderServiceImplTest {
     private  CashOperationRepository cashOperationRepository;
 
     @Mock
-    private PawnBranchRepository pawnBranchRepository;
-
-    @Mock
     private PawnBranch currentBranch;
 
     @Mock
@@ -49,7 +46,6 @@ class LoanOrderServiceImplTest {
 
     @BeforeEach
     void setUp() {
-        ReflectionTestUtils.setField(underTest, "currentPawnShop", "8 March St new York, NY 10803");
         ReflectionTestUtils.setField(underTest, "hundred", new BigDecimal(100));
         ReflectionTestUtils.setField(underTest, "divisionScale",8);
     }

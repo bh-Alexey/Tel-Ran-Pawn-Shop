@@ -26,12 +26,8 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     private final LoanRepository loanRepository;
     private final LoanOrderRepository loanOrderRepository;
     private final CashOperationRepository cashOperationRepository;
-    private final PawnBranchRepository pawnBranchRepository;
     private final PercentageRepository percentageRepository;
     private final PawnBranch currentBranch;
-
-    @Value("${pawnshop.address}")
-    private String currentPawnShop;
 
     @Value("${pawnshop.hundred.percents}")
     private BigDecimal hundred;
@@ -39,7 +35,6 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     @Value("${pawnshop.division.scale}")
     private int divisionScale;
 
-    private SecurityUtils securityUtils;
     Long currentManagerId = SecurityUtils.getCurrentManagerId();
 
     private Loan getLoanFromDB(Long loanId){

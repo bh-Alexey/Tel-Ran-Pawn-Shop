@@ -103,6 +103,7 @@ class ManagerServiceImplTest {
 
     @Test
     void canUpdateManager() {
+        //Given
         Long managerId = 1L;
         String updatedFirstName = "Merry";
         String updatedLastName = "Poppins";
@@ -110,6 +111,7 @@ class ManagerServiceImplTest {
         String updatedPassword = "password";
         Manager existingManager = new Manager();
 
+        //When
         when(managerRepository.findById(anyLong())).thenReturn(Optional.of(existingManager));
         when(managerRepository.findManagerByEmail(anyString())).thenReturn(Optional.empty());
         when(passwordEncoder.encode(updatedPassword)).thenReturn("encodedPassword");
@@ -117,6 +119,7 @@ class ManagerServiceImplTest {
 
         underTest.updateManager(managerId, updatedFirstName, updatedLastName, updatedEmail, updatedPassword);
 
+        //Then
         verify(managerRepository, times(1)).findById(managerId);
         verify(managerRepository, times(1)).findManagerByEmail(updatedEmail);
         assertThat(existingManager.getFirstName()).isEqualTo(updatedFirstName);

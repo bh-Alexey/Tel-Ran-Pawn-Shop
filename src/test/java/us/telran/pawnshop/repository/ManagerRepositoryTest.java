@@ -30,6 +30,7 @@ class ManagerRepositoryTest {
         Manager manager = new Manager("Jason",
                 "Jay",
                 email,
+                "IjdbFfghpvmbvsKvcdJ=L",
                 EXPERT_APPRAISER);
 
         underTest.save(manager);

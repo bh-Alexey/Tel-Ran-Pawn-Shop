@@ -12,6 +12,8 @@ public interface PledgeService {
 
     List<Pledge> getPledges();
 
+    List<Pledge> getAllByStatus(PledgeStatus status);
+
     void updatePledge(Long pledgeId, String description, PledgeStatus status, int itemQuantity);
 
     void deletePledge(Long pledgeId);

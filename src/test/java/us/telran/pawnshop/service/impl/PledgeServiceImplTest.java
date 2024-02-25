@@ -34,9 +34,6 @@ class PledgeServiceImplTest {
     private PledgeCategoryRepository pledgeCategoryRepository;
 
     @Mock
-    private ManagerRepository managerRepository;
-
-    @Mock
     private PreciousMetalPriceRepository preciousMetalPriceRepository;
 
     @Mock
@@ -62,7 +59,6 @@ class PledgeServiceImplTest {
         Client client = new Client();
         Product product = new Product();
         PledgeCategory category = new PledgeCategory();
-        Manager manager = new Manager();
         PreciousMetalPrice metalPrice = new PreciousMetalPrice();
         metalPrice.setMetalPrice(BigDecimal.valueOf(30));
 

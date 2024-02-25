@@ -23,10 +23,7 @@ public class CashOperationServiceImpl implements CashOperationService {
     private final CashOperationRepository cashOperationRepository;
     private final PawnBranchRepository pawnBranchRepository;
     private final PawnBranch currentBranch;
-
-    private SecurityUtils securityUtils;
     Long currentManagerId = SecurityUtils.getCurrentManagerId();
-
 
     @Override
     public List<CashOperation> getOperations() {

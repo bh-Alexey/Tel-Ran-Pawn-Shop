@@ -9,7 +9,6 @@ import us.telran.pawnshop.repository.PawnBranchRepository;
 
 import java.util.Optional;
 
-
 @Configuration
 @RequiredArgsConstructor
 public class BranchContext {

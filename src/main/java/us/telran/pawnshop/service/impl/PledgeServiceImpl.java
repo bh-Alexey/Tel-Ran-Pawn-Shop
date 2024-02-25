@@ -13,7 +13,6 @@ import us.telran.pawnshop.service.PledgeService;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.Optional;
 
 
 @Service
@@ -23,11 +22,9 @@ public class PledgeServiceImpl implements PledgeService {
     private final PledgeRepository pledgeRepository;
     private final ClientRepository clientRepository;
     private final PledgeCategoryRepository pledgeCategoryRepository;
-    private final ManagerRepository managerRepository;
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
     private final ProductRepository productRepository;
 
-    private SecurityUtils securityUtils;
     Long currentManagerId = SecurityUtils.getCurrentManagerId();
 
     @Override
@@ -60,7 +57,7 @@ public class PledgeServiceImpl implements PledgeService {
         pledge.setWeightGross(pledgeCreationRequest.getWeightGross());
         pledge.setWeightNet(pledgeCreationRequest.getWeightNet());
         pledge.setEstimatedPrice(pledge.getWeightNet().multiply(metalPrice.getMetalPrice()));
-        pledge.setStatus(PledgeStatus.PLEDGED);
+        pledge.setStatus(PledgeStatus.PENDING);
 
         pledgeRepository.save(pledge);
     }
@@ -68,6 +65,11 @@ public class PledgeServiceImpl implements PledgeService {
     @Override
     public List<Pledge> getPledges() {
         return pledgeRepository.findAll();
+    }
+
+    @Override
+    public List<Pledge> getAllByStatus(PledgeStatus status) {
+        return pledgeRepository.findAllByStatus(status);
     }
 
     @Override

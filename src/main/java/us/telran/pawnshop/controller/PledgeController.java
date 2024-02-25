@@ -29,6 +29,12 @@ public class PledgeController {
         return pledgeService.getPledges();
     }
 
+    @GetMapping(path = "status/{status}")
+    @Operation(summary = "PLEDGE STATUS", description = "Show pledges with enquired status")
+    public List<Pledge> getAllByStatus(@PathVariable PledgeStatus status) {
+        return pledgeService.getAllByStatus(status);
+    }
+
     @PutMapping(path = "update/{pledgeId}")
     @Operation(summary = "EDIT PLEDGE", description = "Edit information of pledge with specified id." +
             " Modify and save to the DB")
