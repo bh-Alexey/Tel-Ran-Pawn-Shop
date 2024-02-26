@@ -31,7 +31,7 @@ public class CashOperationController {
         cashOperationService.collectCash(operationAmount);
     }
 
-    @GetMapping(value = "all")
+    @GetMapping(value = "show")
     @Operation(summary = "CASH OPERATIONS", description = "Show cash all operations")
     public List<CashOperation> getAllOperations() {
         return cashOperationService.getOperations();

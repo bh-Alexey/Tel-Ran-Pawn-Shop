@@ -29,7 +29,7 @@ public class LoanOrderController {
         loanOrderService.createLoanReceiptOrder(loanOrderRequest);
     }
 
-    @GetMapping("all")
+    @GetMapping("show")
     @Operation(summary = "ALL ORDERS", description = "Show order details for all time")
     public List<LoanOrder> getLoanOrders() {
         return loanOrderService.getAllLoanOrders();

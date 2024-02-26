@@ -23,7 +23,7 @@ public class PledgeController {
         pledgeService.newPledge(pledgeCreationRequest);
     }
 
-    @GetMapping(value = "all")
+    @GetMapping(value = "show")
     @Operation(summary = "ALL PLEDGES", description = "Show pledges for all time")
     public List<Pledge> getPledges() {
         return pledgeService.getPledges();
