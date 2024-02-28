@@ -5,19 +5,23 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
+import us.telran.pawnshop.CurrentBranchInfo;
 import us.telran.pawnshop.dto.LoanOrderRequest;
 import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.LoanTerm;
 import us.telran.pawnshop.entity.enums.OrderType;
 import us.telran.pawnshop.repository.*;
+import us.telran.pawnshop.security.SecurityUtils;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+import static org.mockito.ArgumentMatchers.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -36,7 +40,13 @@ class LoanOrderServiceImplTest {
     private  CashOperationRepository cashOperationRepository;
 
     @Mock
-    private PawnBranch currentBranch;
+    private PawnBranchRepository pawnBranchRepository;
+
+    @Mock
+    private ManagerRepository managerRepository;
+
+    @Mock
+    private CurrentBranchInfo currentBranchInfo;
 
     @Mock
     private PercentageRepository percentageRepository;
@@ -67,7 +77,12 @@ class LoanOrderServiceImplTest {
     @Test
     void canCreateLoanReceiptOrder() {
         //Given
+        Long currentManagerId = SecurityUtils.getCurrentManagerId();
+
         BigDecimal initialBalance = new BigDecimal("10000");
+
+        PawnBranch currentBranch = new PawnBranch();
+        currentBranch.setBalance(initialBalance);
 
         Long loanId = 1L;
         LoanOrderRequest loanOrderRequest = new LoanOrderRequest();
@@ -85,26 +100,38 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
+        Manager currentManager = new Manager();
+        currentManager.setManagerId(currentManagerId);
+
         //When
+        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanRepository.findById(anyLong())).thenReturn(Optional.of(loan));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
-        when(currentBranch.getBalance()).thenReturn(initialBalance)
-                .thenReturn(initialBalance, initialBalance.add(cashOperation.getOperationAmount()));
+        when(currentBranchInfo.getBranchId()).thenReturn(1L);
+        when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
+
 
         underTest.createLoanReceiptOrder(loanOrderRequest);
+
+        BigDecimal expectedBalance = initialBalance.add(cashOperation.getOperationAmount());
 
         //Then
         verify(loanRepository, times(1)).findById(loanOrderRequest.getLoanId());
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-        assertThat(initialBalance.add(cashOperation.getOperationAmount())).isGreaterThan(new BigDecimal("10000"));
+        assertThat(expectedBalance).isGreaterThan(new BigDecimal("10000"));
     }
 
     @Test
     void canCreateLoanExpenseOrder() {
         //Given
+        Long currentManagerId = SecurityUtils.getCurrentManagerId();
+
         BigDecimal initialBalance = new BigDecimal("10000");
+
+        PawnBranch currentBranch = new PawnBranch();
+        currentBranch.setBalance(initialBalance);
 
         Loan loan = new Loan();
         loan.setLoanId(1L);
@@ -116,24 +143,35 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
+        Manager currentManager = new Manager();
+        currentManager.setManagerId(currentManagerId);
+
         //When
+        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
-        when(currentBranch.getBalance()).thenReturn(initialBalance)
-                .thenReturn(initialBalance, initialBalance.subtract(cashOperation.getOperationAmount()));
+        when(currentBranchInfo.getBranchId()).thenReturn(1L);
+        when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
 
         underTest.createLoanExpenseOrder(loan);
+
+        BigDecimal expectedBalance = initialBalance.subtract(cashOperation.getOperationAmount());
 
         //Then
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
-        assertThat(initialBalance.subtract(cashOperation.getOperationAmount())).isLessThan(new BigDecimal("10000"));
+        assertThat(expectedBalance).isLessThan(new BigDecimal("10000"));
     }
 
     @Test
     void canCreateLoanProlongationOrder() {
         //Given
+        Long currentManagerId = SecurityUtils.getCurrentManagerId();
+
         BigDecimal initialBalance = new BigDecimal("10000");
+
+        PawnBranch currentBranch = new PawnBranch();
+        currentBranch.setBalance(initialBalance);
 
         LoanProlongationRequest loanProlongRequest = new LoanProlongationRequest();
         loanProlongRequest.setLoanId(1L);
@@ -156,23 +194,30 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
+        Manager currentManager = new Manager();
+        currentManager.setManagerId(currentManagerId);
+
         //When
+        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanRepository.findById(anyLong())).thenReturn(Optional.of(loan));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
         when(percentageRepository.findByTerm(any(LoanTerm.class))).thenReturn(Optional.of(percentage));
-        when(currentBranch.getBalance()).thenReturn(initialBalance)
-                .thenReturn(initialBalance, initialBalance.add(cashOperation.getOperationAmount()));
+        when(currentBranchInfo.getBranchId()).thenReturn(1L);
+        when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
 
         underTest.createLoanProlongationOrder(loanProlongRequest);
+
+        BigDecimal expectedBalance = currentBranch.getBalance().add(cashOperation.getOperationAmount());
 
         //Then
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
         verify(loanRepository, times(2)).findById(anyLong());
         verify(percentageRepository, times(1)).findByTerm(any(LoanTerm.class));
+        verify(pawnBranchRepository, times(1)).save(currentBranch);
         assertThat(loan.getTerm()).isEqualTo(loanProlongRequest.getLoanTerm());
-        assertThat(initialBalance.add(cashOperation.getOperationAmount())).isGreaterThan(new BigDecimal("10000"));
+        assertThat(expectedBalance).isGreaterThan(new BigDecimal("10000"));
     }
 
     @Test

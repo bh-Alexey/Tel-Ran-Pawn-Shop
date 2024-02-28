@@ -5,6 +5,7 @@ import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
+import us.telran.pawnshop.CurrentBranchInfo;
 import us.telran.pawnshop.dto.LoanOrderRequest;
 import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.*;
@@ -16,6 +17,7 @@ import us.telran.pawnshop.service.LoanOrderService;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
+import java.util.Optional;
 
 import static us.telran.pawnshop.entity.enums.OrderType.*;
 
@@ -27,15 +29,15 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     private final LoanOrderRepository loanOrderRepository;
     private final CashOperationRepository cashOperationRepository;
     private final PercentageRepository percentageRepository;
-    private final PawnBranch currentBranch;
+    private final ManagerRepository managerRepository;
+    private final PawnBranchRepository pawnBranchRepository;
+    private final CurrentBranchInfo currentBranchInfo;
 
     @Value("${pawnshop.hundred.percents}")
     private BigDecimal hundred;
 
     @Value("${pawnshop.division.scale}")
     private int divisionScale;
-
-    Long currentManagerId = SecurityUtils.getCurrentManagerId();
 
     private Loan getLoanFromDB(Long loanId){
         return loanRepository.findById(loanId)
@@ -57,17 +59,18 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
     private void createIncomeCashOperation(LoanOrder loanOrder) {
 
+        Long currentBranchId = currentBranchInfo.getBranchId();
+        PawnBranch currentBranch = getCurrentBranch(currentBranchId);
+
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
-        Manager manager = new Manager();
-        manager.setManagerId(currentManagerId);
-
-        cashOperation.setManager(manager);
         cashOperation.setPawnBranch(currentBranch);
+        cashOperation.setManager(getCurrentManager());
         currentBranch.setBalance(currentBranch.getBalance().add(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Receipt order#" + loanOrder.getOrderId() +
                 " for loanId " + loanOrder.getLoan().getLoanId());
 
+        pawnBranchRepository.save(currentBranch);
         cashOperationRepository.save(cashOperation);
     }
 
@@ -96,17 +99,18 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
     private void createExpenseCashOperation(LoanOrder loanOrder) {
 
+        Long currentBranchId = currentBranchInfo.getBranchId();
+        PawnBranch currentBranch = getCurrentBranch(currentBranchId);
+
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
-        Manager manager = new Manager();
-        manager.setManagerId(currentManagerId);
-
-        cashOperation.setManager(manager);
+        cashOperation.setManager(getCurrentManager());
         cashOperation.setPawnBranch(currentBranch);
         currentBranch.setBalance(currentBranch.getBalance().subtract(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Expense order#" + loanOrder.getOrderId() +
                 " for loanId " + loanOrder.getLoan().getLoanId());
 
+        pawnBranchRepository.save(currentBranch);
         cashOperationRepository.save(cashOperation);
     }
 
@@ -145,6 +149,21 @@ public class LoanOrderServiceImpl implements LoanOrderService {
                         .multiply(BigDecimal.valueOf(loan.getTerm().getDays())))));
         loan.setExpiredAt(loan.getExpiredAt().plusDays(loan.getTerm().getDays()));
         loanRepository.save(loan);
+    }
+
+    private Manager getCurrentManager() {
+        Long currentManagerId = SecurityUtils.getCurrentManagerId();
+        Optional<Manager> managerOptional = managerRepository.findById(currentManagerId);
+        if (managerOptional.isPresent()) {
+            return managerOptional.get();
+        }
+        throw new EntityNotFoundException("Manager not found");
+    }
+
+    private PawnBranch getCurrentBranch(Long branchId) {
+        return pawnBranchRepository.findById(branchId)
+                .orElseThrow(() -> new EntityNotFoundException("Branch with id: " + branchId
+                        + " not found"));
     }
 
     @Override

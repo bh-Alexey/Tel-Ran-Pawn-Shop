@@ -1,5 +1,6 @@
 package us.telran.pawnshop.service.impl;
 
+import jakarta.persistence.EntityExistsException;
 import jakarta.persistence.EntityNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -56,7 +57,7 @@ class PledgeCategoryServiceImplTest {
 
         //Then
         assertThat(thrown)
-                .isInstanceOf(IllegalStateException.class)
+                .isInstanceOf(EntityExistsException.class)
                 .hasMessageContaining("Category introduced");
 
         verify(pledgeCategoryRepository, times(1)).findByCategoryName(existingCategory.getCategoryName());

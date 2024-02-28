@@ -1,6 +1,4 @@
 package us.telran.pawnshop.security;
-
-
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -20,14 +18,14 @@ public class ManagerDetailsService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
 
-            return managerRepository.findManagerByEmail(email)
-                    .map(manager -> new ManagerDetails(
-                            manager.getManagerId(),
-                            manager.getEmail(),
-                            manager.getPassword(),
-                            Collections.singletonList(new SimpleGrantedAuthority(manager.getManagerStatus().getRole()))
-                    ))
-                    .orElseThrow(() -> new UsernameNotFoundException("Manager not found with email: " + email));
+        return managerRepository.findManagerByEmail(email)
+                .map(manager -> new ManagerDetails(
+                        manager.getManagerId(),
+                        manager.getEmail(),
+                        manager.getPassword(),
+                        Collections.singletonList(new SimpleGrantedAuthority(manager.getManagerStatus().getRole()))
+                ))
+                .orElseThrow(() -> new UsernameNotFoundException("Manager not found with email: " + email));
     }
 }
 

@@ -21,6 +21,7 @@ import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.BDDMockito.given;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
+import static us.telran.pawnshop.entity.enums.PledgeStatus.*;
 
 @ExtendWith(MockitoExtension.class)
 class PledgeServiceImplTest {
@@ -91,9 +92,9 @@ class PledgeServiceImplTest {
         Long pledgeId = 1L;
         String newDescription = "New description";
         int newItemQuantity = 5;
-        PledgeStatus newStatus = PledgeStatus.PLEDGED;
+        PledgeStatus newStatus = PLEDGED;
         Pledge existingPledge = new Pledge();
-        existingPledge.setStatus(PledgeStatus.PLEDGED);
+        existingPledge.setStatus(PLEDGED);
 
         given(pledgeRepository.findById(pledgeId)).willReturn(Optional.of(existingPledge));
 
@@ -114,7 +115,7 @@ class PledgeServiceImplTest {
         given(pledgeRepository.findById(pledgeId)).willReturn(Optional.empty());
 
         //Then
-        assertThatThrownBy(() -> underTest.updatePledge(pledgeId, "description", PledgeStatus.PLEDGED, 1))
+        assertThatThrownBy(() -> underTest.updatePledge(pledgeId, "description", PLEDGED, 1))
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Pledge with id " + pledgeId + " doesn't exist");
     }
@@ -124,7 +125,7 @@ class PledgeServiceImplTest {
         //Given
         Long pledgeId = 1L;
 
-        PledgeStatus newStatus = PledgeStatus.PLEDGED;
+        PledgeStatus newStatus = PLEDGED;
         Pledge existingPledge = new Pledge();
         existingPledge.setStatus(PledgeStatus.COLLECTED);
 
@@ -191,4 +192,18 @@ class PledgeServiceImplTest {
                 .isInstanceOf(EntityNotFoundException.class)
                 .hasMessageContaining("Pledge with id " + pledgeId + " doesn't exist");
     }
+
+    @Test
+    void canGetAllByStatus() {
+        //Given
+        PledgeStatus status = PLEDGED;
+
+        //When
+        underTest.getAllByStatus(status);
+
+        //Then
+        pledgeRepository.findAllByStatus(status);
+
+    }
+
 }

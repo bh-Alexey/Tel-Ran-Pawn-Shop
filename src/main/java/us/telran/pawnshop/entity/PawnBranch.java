@@ -20,7 +20,7 @@ import static jakarta.persistence.GenerationType.*;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-@Table(name = "pawn-branch")
+@Table(name = "pawn_branch")
 public class PawnBranch {
 
     @Id

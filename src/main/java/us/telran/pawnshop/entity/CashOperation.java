@@ -11,6 +11,7 @@ import us.telran.pawnshop.entity.enums.OrderType;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
+import static jakarta.persistence.CascadeType.*;
 import static jakarta.persistence.EnumType.*;
 import static jakarta.persistence.GenerationType.*;
 
@@ -25,12 +26,12 @@ public class CashOperation {
     @Id
     @SequenceGenerator(
             name = "order_sequence",
-            sequenceName = "order_sequence",
+            sequenceName = "operation_sequence",
             allocationSize = 1
     )
     @GeneratedValue(
             strategy = SEQUENCE,
-            generator = "order_sequence"
+            generator = "operation_sequence"
     )
     private Long operationId;
 
@@ -38,7 +39,7 @@ public class CashOperation {
     @JoinColumn(name = "branch_id")
     private PawnBranch pawnBranch;
 
-    @ManyToOne
+    @ManyToOne(cascade = PERSIST)
     @JoinColumn(name = "manager_id")
     private Manager manager;
 

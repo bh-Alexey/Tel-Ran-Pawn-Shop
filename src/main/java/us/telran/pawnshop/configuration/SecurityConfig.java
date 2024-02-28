@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
 import org.springframework.security.config.annotation.web.configurers.LogoutConfigurer;
+import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
@@ -23,7 +24,7 @@ public class SecurityConfig {
             .csrf(AbstractHttpConfigurer::disable)
             .authorizeHttpRequests(auth -> auth
                     .requestMatchers("/v2/api-docs", "/v3/api-docs", "/swagger-resources/**",
-                                     "/swagger-ui/**", "/swagger-ui.html").permitAll()
+                                     "/swagger-ui/**", "/swagger-ui.html").hasAnyRole("MANAGER", "DIRECTOR")
                     .requestMatchers(HttpMethod.GET, "/pawn-shop/**").hasAnyRole("MANAGER", "DIRECTOR")
                     .requestMatchers(HttpMethod.PUT, "/pawn-shop/clients/update/*").hasAnyRole("MANAGER", "DIRECTOR")
                     .requestMatchers(HttpMethod.POST,"/pawn-shop/pledges/*",
@@ -32,8 +33,13 @@ public class SecurityConfig {
                                                      "/pawn-shop/cash-operations/*",
                                                      "/pawn-shop/loan-orders/*").hasAnyRole("MANAGER", "DIRECTOR")
                     .requestMatchers("/pawn-shop/**").hasRole("DIRECTOR")
-
                     .anyRequest().authenticated()
+            )
+            .sessionManagement(sessionManagement ->
+                    sessionManagement
+                            .sessionCreationPolicy(SessionCreationPolicy.IF_REQUIRED)
+                            .maximumSessions(1)
+                            .maxSessionsPreventsLogin(true)
             )
             .headers(headers -> headers
                     .permissionsPolicy(policy -> policy.policy("frame-ancestors 'self'"))

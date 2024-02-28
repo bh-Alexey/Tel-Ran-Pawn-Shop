@@ -1,4 +1,4 @@
-package us.telran.pawnshop.security;
+package us.telran.pawnshop.configuration;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,7 +14,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import us.telran.pawnshop.dto.ClientRealCreationRequest;
 import us.telran.pawnshop.dto.ManagerCreationRequest;
 import us.telran.pawnshop.entity.Client;
-import us.telran.pawnshop.entity.PawnBranch;
 import us.telran.pawnshop.repository.ClientRepository;
 import us.telran.pawnshop.service.impl.ClientServiceImpl;
 
@@ -23,7 +22,7 @@ import java.time.Month;
 
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-import static us.telran.pawnshop.entity.enums.ManagerStatus.*;
+import static us.telran.pawnshop.entity.enums.ManagerStatus.EXPERT_APPRAISER;
 
 @SpringBootTest
 @AutoConfigureMockMvc
@@ -37,7 +36,7 @@ public class AccessControlTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private PawnBranch currentBranch;
+    private BranchConfig branchConfig;
 
     @MockBean
     private ClientRepository clientRepository;
