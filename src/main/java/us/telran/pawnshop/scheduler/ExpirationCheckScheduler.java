@@ -16,7 +16,7 @@ import java.util.List;
 @RequiredArgsConstructor
 public class ExpirationCheckScheduler {
 
-    private final LoanRepository loanRepository; // Подставьте имя вашего репозитория
+    private final LoanRepository loanRepository;
 
     @Scheduled(cron = "0 0 0 * * *") // Run every midnight
     @Transactional
