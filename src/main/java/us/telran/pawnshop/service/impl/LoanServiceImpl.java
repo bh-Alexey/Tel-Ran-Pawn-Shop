@@ -47,10 +47,10 @@ public class LoanServiceImpl implements LoanService {
         Loan loan = new Loan();
         loan.setPledge(pledge);
 
-        if (loanCreationRequest.getCreditAmount().compareTo(pledge.getEstimatedPrice()) > 0) {
+        if (loanCreationRequest.getLoanAmount().compareTo(pledge.getEstimatedPrice()) > 0) {
             throw new IllegalStateException("Amount can't be higher than " + pledge.getEstimatedPrice());
         } else {
-            loan.setLoanAmount(loanCreationRequest.getCreditAmount());
+            loan.setLoanAmount(loanCreationRequest.getLoanAmount());
         }
 
         loan.setTerm(loanCreationRequest.getTerm());

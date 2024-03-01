@@ -14,12 +14,11 @@ import us.telran.pawnshop.entity.enums.LoanTerm;
 
 import java.math.BigDecimal;
 import java.sql.Timestamp;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.EnumType.*;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -37,11 +36,9 @@ public class Loan {
     @JoinColumn(name = "pledge_id")
     private Pledge pledge;
 
-    @NotNull
     @Column(name = "loan_amount", nullable = false)
     private BigDecimal loanAmount;
 
-    @NotNull
     @Column(name = "term", nullable = false)
     @Enumerated(STRING)
     private LoanTerm term;

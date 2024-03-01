@@ -65,7 +65,7 @@ class LoanServiceImplTest {
 
         LoanCreationRequest loanCreationRequest = new LoanCreationRequest();
         loanCreationRequest.setPledgeId(1L);
-        loanCreationRequest.setCreditAmount(BigDecimal.valueOf(100));
+        loanCreationRequest.setLoanAmount(BigDecimal.valueOf(100));
         loanCreationRequest.setTerm(LoanTerm.THREE_WEEKS);
 
         when(pledgeRepository.findById(1L)).thenReturn(Optional.of(pledge));
@@ -84,7 +84,7 @@ class LoanServiceImplTest {
 
         LoanCreationRequest loanCreationRequest = new LoanCreationRequest();
         loanCreationRequest.setPledgeId(1L);
-        loanCreationRequest.setCreditAmount(BigDecimal.valueOf(106));
+        loanCreationRequest.setLoanAmount(BigDecimal.valueOf(106));
         loanCreationRequest.setTerm(LoanTerm.WEEK);
 
         when(pledgeRepository.findById(1L)).thenReturn(Optional.of(pledge));

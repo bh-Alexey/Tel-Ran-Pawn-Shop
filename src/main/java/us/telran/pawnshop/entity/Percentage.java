@@ -23,7 +23,6 @@ public class Percentage {
     @GeneratedValue(strategy = IDENTITY)
     private Long percentageId;
 
-    @NotNull
     @Column(name = "period", nullable = false)
     @Enumerated(STRING)
     private LoanTerm term;

@@ -6,22 +6,22 @@ import static org.assertj.core.api.Assertions.assertThat;
 public class ClientCreationRequestTest {
 
     @Test
-    public void testClientCreationRequest() {
+    public void itShouldCheckCorrectValues() {
         //Given
-        ClientCreationRequest clientCreationRequest = new ClientCreationRequest();
+        ClientCreationRequest dto = new ClientCreationRequest();
 
         //When
-        clientCreationRequest.setFirstName("Bob");
-        clientCreationRequest.setLastName("Sponge");
-        clientCreationRequest.setDateOfBirth(LocalDate.of(1990, 1, 1));
-        clientCreationRequest.setEmail("sponge.bob@example.com");
-        clientCreationRequest.setAddress("Ocean deep");
+        dto.setFirstName("Bob");
+        dto.setLastName("Sponge");
+        dto.setDateOfBirth(LocalDate.of(1990, 1, 1));
+        dto.setEmail("sponge.bob@example.com");
+        dto.setAddress("Ocean deep");
 
         //Then
-        assertThat(clientCreationRequest.getFirstName()).isEqualTo("Bob");
-        assertThat(clientCreationRequest.getLastName()).isEqualTo("Sponge");
-        assertThat(clientCreationRequest.getDateOfBirth()).isEqualTo(LocalDate.of(1990, 1, 1));
-        assertThat(clientCreationRequest.getEmail()).isEqualTo("sponge.bob@example.com");
-        assertThat(clientCreationRequest.getAddress()).isEqualTo("Ocean deep");
+        assertThat(dto).hasFieldOrPropertyWithValue("firstName","Bob");
+        assertThat(dto).hasFieldOrPropertyWithValue("lastName","Sponge");
+        assertThat(dto).hasFieldOrPropertyWithValue("dateOfBirth",LocalDate.of(1990, 1, 1));
+        assertThat(dto).hasFieldOrPropertyWithValue("email","sponge.bob@example.com");
+        assertThat(dto).hasFieldOrPropertyWithValue("address","Ocean deep");
     }
 }

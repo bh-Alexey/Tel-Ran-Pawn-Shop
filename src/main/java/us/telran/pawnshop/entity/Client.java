@@ -1,9 +1,9 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
-import lombok.*;
-import org.springframework.beans.factory.annotation.Value;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
@@ -11,10 +11,9 @@ import us.telran.pawnshop.entity.enums.ClientStatus;
 
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.concurrent.ThreadLocalRandom;
 
-import static jakarta.persistence.EnumType.*;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.SEQUENCE;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -45,33 +44,26 @@ public class Client {
     @Column(name = "client_id", updatable = false)
     private Long clientId;
 
-    @NotNull
     @Column(name = "status", nullable = false, updatable = true)
     @Enumerated(STRING)
     private ClientStatus status;
 
-    @NotNull
+
     @Column(name = "ssn", length = 9, nullable = false, unique = true)
     private int socialSecurityNumber;
 
-    @NotNull
-    @Past
     @Column(name = "date_of_birth", nullable = false)
     private LocalDate dateOfBirth;
 
-    @NotBlank
     @Column(name = "first_name", nullable = false)
     private String firstName;
 
-    @NotBlank
     @Column(name = "last_name", nullable = false)
     private String lastName;
 
-    @Email
     @Column(name = "email", nullable = false, unique = true)
     private String email;
 
-    @NotBlank
     @Column(name = "address", nullable = false)
     private String address;
 

@@ -1,7 +1,6 @@
 package us.telran.pawnshop.entity;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -12,9 +11,9 @@ import us.telran.pawnshop.entity.enums.MetalPurity;
 import java.math.BigDecimal;
 import java.sql.Timestamp;
 
-import static jakarta.persistence.CascadeType.*;
-import static jakarta.persistence.EnumType.*;
-import static jakarta.persistence.GenerationType.*;
+import static jakarta.persistence.CascadeType.ALL;
+import static jakarta.persistence.EnumType.STRING;
+import static jakarta.persistence.GenerationType.IDENTITY;
 
 @Entity
 @EntityListeners(AuditingEntityListener.class)
@@ -32,12 +31,10 @@ public class PreciousMetalPrice {
     @JoinColumn(name = "category_id")
     private PledgeCategory category;
 
-    @NotNull
     @Column(name = "purity",nullable = false, unique = true)
     @Enumerated(STRING)
     public MetalPurity purity;
 
-    @NotNull
     @Column(name = "price", nullable = false)
     private BigDecimal metalPrice;
 

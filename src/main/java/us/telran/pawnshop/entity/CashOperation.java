@@ -43,7 +43,6 @@ public class CashOperation {
     @JoinColumn(name = "manager_id")
     private Manager manager;
 
-
     @Column(name = "order_type")
     @Enumerated(STRING)
     private OrderType orderType;

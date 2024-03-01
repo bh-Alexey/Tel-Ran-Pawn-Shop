@@ -32,27 +32,22 @@ public class Pledge {
     @GeneratedValue(strategy = IDENTITY)
     private Long pledgeId;
 
-    @NotNull
     @ManyToOne(cascade = ALL)
     @JoinColumn(name = "product_id")
     private Product product;
 
-    @NotNull
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "manager_id")
+    @JoinColumn(name = "manager_id", nullable = false)
     private Manager manager;
 
-    @NotNull
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "client_id")
+    @JoinColumn(name = "client_id", nullable = false)
     private Client client;
 
-    @NotNull
     @ManyToOne(cascade = ALL)
-    @JoinColumn(name = "category_id")
+    @JoinColumn(name = "category_id", nullable = false)
     private PledgeCategory category;
 
-    @NotNull
     @Column(name = "item")
     @Enumerated(STRING)
     private ItemType item;
@@ -60,20 +55,16 @@ public class Pledge {
     @Column(name = "description")
     private String description;
 
-    @NotNull
     @Column(name = "quantity")
     private int itemQuantity;
 
-    @NotNull
     @Column(name = "stamp")
     @Enumerated(STRING)
     private MetalPurity purity;
 
-    @NotNull
     @Column(name = "gross_weight")
     private BigDecimal weightGross;
 
-    @NotNull
     @Column(name = "net_weight")
     private BigDecimal weightNet;
 

@@ -45,8 +45,8 @@ public class CashOperationController {
     }
 
     @PostMapping(value = "collect/transfer/")
-    @Operation(summary = "REPLENISH FROM BRANCH", description = "Replenish cash register of current branch." +
-            " Collect money to another branch")
+    @Operation(summary = "COLLECT TO BRANCH", description = "Collect cash register of current branch." +
+            " Transfer money to another branch")
     public void getCashToBranch(@RequestBody TransferRequest transferRequest) {
         cashOperationService.collectCashToBranch(transferRequest);
     }
