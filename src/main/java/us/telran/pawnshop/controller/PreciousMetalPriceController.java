@@ -1,6 +1,7 @@
 package us.telran.pawnshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.dto.PreciousMetalPriceCreationRequest;
@@ -19,7 +20,7 @@ public class PreciousMetalPriceController {
 
     @PostMapping(value = "add")
     @Operation(summary = "NEW PRICE", description = "Add price for new subject of pledge and save to the DB")
-    public void addNewPrice(@RequestBody PreciousMetalPriceCreationRequest preciousMetalPriceCreationRequest) {
+    public void addNewPrice(@Valid @RequestBody PreciousMetalPriceCreationRequest preciousMetalPriceCreationRequest) {
         preciousMetalPriceService.addNewPrice(preciousMetalPriceCreationRequest);
     }
 

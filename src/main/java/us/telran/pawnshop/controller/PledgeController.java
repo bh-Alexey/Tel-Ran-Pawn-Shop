@@ -1,6 +1,7 @@
 package us.telran.pawnshop.controller;
 
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 import us.telran.pawnshop.dto.PledgeCreationRequest;
@@ -19,7 +20,7 @@ public class PledgeController {
 
     @PostMapping(value = "new")
     @Operation(summary = "ADD NEW PLEDGE", description = "Create and save pledge to DB. New pledges will have \"Pledged\" status")
-    public void createNewPledge(@RequestBody PledgeCreationRequest pledgeCreationRequest) {
+    public void createNewPledge(@Valid @RequestBody PledgeCreationRequest pledgeCreationRequest) {
         pledgeService.newPledge(pledgeCreationRequest);
     }
 

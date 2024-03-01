@@ -107,7 +107,7 @@ class PledgeRepositoryTest {
                 firstManager,
                 secondClient,
                 firstCategory,
-                NECKLESS,
+                NECKLACE,
                 "Neckless with pearls",
                 1,
                 MetalPurity.GOLD_585,

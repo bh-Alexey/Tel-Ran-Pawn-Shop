@@ -42,5 +42,4 @@ public class PercentageController {
     public void deletePercentage(@PathVariable("percentageId") Long percentageId) {
         percentageService.deletePercentage(percentageId);
     }
-
 }
