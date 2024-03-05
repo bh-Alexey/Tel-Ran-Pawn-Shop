@@ -8,11 +8,14 @@ import us.telran.pawnshop.dto.PledgeCreationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.repository.*;
-import us.telran.pawnshop.security.SecurityUtils;
+import us.telran.pawnshop.service.CurrentManagerService;
 import us.telran.pawnshop.service.PledgeService;
 
 import java.util.List;
 import java.util.Objects;
+
+
+import static us.telran.pawnshop.entity.enums.PledgeStatus.*;
 
 
 @Service
@@ -24,8 +27,7 @@ public class PledgeServiceImpl implements PledgeService {
     private final PledgeCategoryRepository pledgeCategoryRepository;
     private final PreciousMetalPriceRepository preciousMetalPriceRepository;
     private final ProductRepository productRepository;
-
-    Long currentManagerId = SecurityUtils.getCurrentManagerId();
+    private final CurrentManagerService currentManagerService;
 
     @Override
     @Transactional
@@ -42,8 +44,7 @@ public class PledgeServiceImpl implements PledgeService {
         PreciousMetalPrice metalPrice = preciousMetalPriceRepository.findByPurity(pledgeCreationRequest.getPurity())
                 .orElseThrow(() -> new EntityNotFoundException("Price not found"));
 
-        Manager manager = new Manager();
-        manager.setManagerId(currentManagerId);
+        Manager manager = currentManagerService.getCurrentManager();
 
         Pledge pledge = new Pledge();
         pledge.setClient(client);
@@ -57,7 +58,7 @@ public class PledgeServiceImpl implements PledgeService {
         pledge.setWeightGross(pledgeCreationRequest.getWeightGross());
         pledge.setWeightNet(pledgeCreationRequest.getWeightNet());
         pledge.setEstimatedPrice(pledge.getWeightNet().multiply(metalPrice.getMetalPrice()));
-        pledge.setStatus(PledgeStatus.PENDING);
+        pledge.setStatus(PENDING);
 
         pledgeRepository.save(pledge);
     }
@@ -102,5 +103,6 @@ public class PledgeServiceImpl implements PledgeService {
         return pledgeRepository.findById(pledgeId)
                 .orElseThrow(() -> new EntityNotFoundException("Pledge with id " + pledgeId + " doesn't exist"));
     }
+
 }
 

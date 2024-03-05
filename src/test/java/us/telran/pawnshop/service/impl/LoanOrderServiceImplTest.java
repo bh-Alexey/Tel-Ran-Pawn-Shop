@@ -5,7 +5,6 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.test.util.ReflectionTestUtils;
 import us.telran.pawnshop.CurrentBranchInfo;
@@ -15,13 +14,12 @@ import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.LoanTerm;
 import us.telran.pawnshop.entity.enums.OrderType;
 import us.telran.pawnshop.repository.*;
-import us.telran.pawnshop.security.SecurityUtils;
+import us.telran.pawnshop.service.CurrentManagerService;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
-import static org.mockito.ArgumentMatchers.eq;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
@@ -45,6 +43,8 @@ class LoanOrderServiceImplTest {
     @Mock
     private ManagerRepository managerRepository;
 
+    @Mock
+    private CurrentManagerService currentManagerService;
     @Mock
     private CurrentBranchInfo currentBranchInfo;
 
@@ -77,8 +77,6 @@ class LoanOrderServiceImplTest {
     @Test
     void canCreateLoanReceiptOrder() {
         //Given
-        Long currentManagerId = SecurityUtils.getCurrentManagerId();
-
         BigDecimal initialBalance = new BigDecimal("10000");
 
         PawnBranch currentBranch = new PawnBranch();
@@ -100,16 +98,13 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
-        Manager currentManager = new Manager();
-        currentManager.setManagerId(currentManagerId);
-
         //When
-        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanRepository.findById(anyLong())).thenReturn(Optional.of(loan));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
         when(currentBranchInfo.getBranchId()).thenReturn(1L);
         when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
+        when(currentManagerService.getCurrentManager()).thenReturn(new Manager());
 
 
         underTest.createLoanReceiptOrder(loanOrderRequest);
@@ -120,14 +115,13 @@ class LoanOrderServiceImplTest {
         verify(loanRepository, times(1)).findById(loanOrderRequest.getLoanId());
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
+        verify(currentManagerService, atLeastOnce()).getCurrentManager();
         assertThat(expectedBalance).isGreaterThan(new BigDecimal("10000"));
     }
 
     @Test
     void canCreateLoanExpenseOrder() {
         //Given
-        Long currentManagerId = SecurityUtils.getCurrentManagerId();
-
         BigDecimal initialBalance = new BigDecimal("10000");
 
         PawnBranch currentBranch = new PawnBranch();
@@ -143,15 +137,12 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
-        Manager currentManager = new Manager();
-        currentManager.setManagerId(currentManagerId);
-
         //When
-        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
         when(currentBranchInfo.getBranchId()).thenReturn(1L);
         when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
+        when(currentManagerService.getCurrentManager()).thenReturn(new Manager());
 
         underTest.createLoanExpenseOrder(loan);
 
@@ -160,14 +151,13 @@ class LoanOrderServiceImplTest {
         //Then
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
+        verify(currentManagerService, atLeastOnce()).getCurrentManager();
         assertThat(expectedBalance).isLessThan(new BigDecimal("10000"));
     }
 
     @Test
     void canCreateLoanProlongationOrder() {
         //Given
-        Long currentManagerId = SecurityUtils.getCurrentManagerId();
-
         BigDecimal initialBalance = new BigDecimal("10000");
 
         PawnBranch currentBranch = new PawnBranch();
@@ -194,17 +184,15 @@ class LoanOrderServiceImplTest {
         CashOperation cashOperation = new CashOperation();
         cashOperation.setOperationAmount(loanOrder.getOrderAmount());
 
-        Manager currentManager = new Manager();
-        currentManager.setManagerId(currentManagerId);
 
         //When
-        when(managerRepository.findById(eq(currentManagerId))).thenReturn(Optional.of(currentManager));
         when(loanRepository.findById(anyLong())).thenReturn(Optional.of(loan));
         when(loanOrderRepository.save(any(LoanOrder.class))).thenReturn(loanOrder);
         when(cashOperationRepository.save(any(CashOperation.class))).thenReturn(cashOperation);
         when(percentageRepository.findByTerm(any(LoanTerm.class))).thenReturn(Optional.of(percentage));
         when(currentBranchInfo.getBranchId()).thenReturn(1L);
         when(pawnBranchRepository.findById(1L)).thenReturn(Optional.of(currentBranch));
+        when(currentManagerService.getCurrentManager()).thenReturn(new Manager());
 
         underTest.createLoanProlongationOrder(loanProlongRequest);
 
@@ -213,6 +201,7 @@ class LoanOrderServiceImplTest {
         //Then
         verify(loanOrderRepository, times(1)).save(any(LoanOrder.class));
         verify(cashOperationRepository, times(1)).save(any(CashOperation.class));
+        verify(currentManagerService, atLeastOnce()).getCurrentManager();
         verify(loanRepository, times(2)).findById(anyLong());
         verify(percentageRepository, times(1)).findByTerm(any(LoanTerm.class));
         verify(pawnBranchRepository, times(1)).save(currentBranch);

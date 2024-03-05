@@ -13,14 +13,14 @@ import us.telran.pawnshop.entity.enums.ItemType;
 import us.telran.pawnshop.entity.enums.MetalPurity;
 import us.telran.pawnshop.entity.enums.PledgeStatus;
 import us.telran.pawnshop.repository.*;
+import us.telran.pawnshop.service.CurrentManagerService;
 
 import java.math.BigDecimal;
 import java.util.Optional;
 
 import static org.assertj.core.api.AssertionsForClassTypes.*;
 import static org.mockito.BDDMockito.given;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.*;
 import static us.telran.pawnshop.entity.enums.PledgeStatus.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -36,6 +36,9 @@ class PledgeServiceImplTest {
 
     @Mock
     private PreciousMetalPriceRepository preciousMetalPriceRepository;
+
+    @Mock
+    private CurrentManagerService currentManagerService;
 
     @Mock
     private ProductRepository productRepository;
@@ -62,18 +65,20 @@ class PledgeServiceImplTest {
         PledgeCategory category = new PledgeCategory();
         PreciousMetalPrice metalPrice = new PreciousMetalPrice();
         metalPrice.setMetalPrice(BigDecimal.valueOf(30));
+        Manager currentManager = currentManagerService.getCurrentManager();
 
         given(clientRepository.findById(request.getClientId())).willReturn(Optional.of(client));
         given(productRepository.findById(request.getProductId())).willReturn(Optional.of(product));
         given(pledgeCategoryRepository.findById(request.getCategoryId())).willReturn(Optional.of(category));
         given(preciousMetalPriceRepository.findByPurity(request.getPurity())).willReturn(Optional.of(metalPrice));
-
+        given(currentManagerService.getCurrentManager()).willReturn(currentManager);
         // When
         underTest.newPledge(request);
 
         // Then
         ArgumentCaptor<Pledge> argumentCaptor = ArgumentCaptor.forClass(Pledge.class);
         verify(pledgeRepository, times(1)).save(argumentCaptor.capture());
+        verify(currentManagerService, atLeastOnce()).getCurrentManager();
         assertThat(argumentCaptor.getValue().getClient()).isEqualTo(client);
     }
 

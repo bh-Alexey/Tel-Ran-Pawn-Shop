@@ -20,7 +20,7 @@ public class PledgeController {
 
     @PostMapping(value = "new")
     @Operation(summary = "ADD NEW PLEDGE", description = "Create and save pledge to DB. New pledges will have \"Pledged\" status")
-    public void createNewPledge(@Valid @RequestBody PledgeCreationRequest pledgeCreationRequest) {
+    public void createNewPledge(@RequestBody @Valid PledgeCreationRequest pledgeCreationRequest) {
         pledgeService.newPledge(pledgeCreationRequest);
     }
 

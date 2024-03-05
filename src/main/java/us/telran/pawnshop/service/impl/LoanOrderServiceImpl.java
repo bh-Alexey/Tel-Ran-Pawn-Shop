@@ -11,13 +11,12 @@ import us.telran.pawnshop.dto.LoanProlongationRequest;
 import us.telran.pawnshop.entity.*;
 import us.telran.pawnshop.entity.enums.OrderType;
 import us.telran.pawnshop.repository.*;
-import us.telran.pawnshop.security.SecurityUtils;
+import us.telran.pawnshop.service.CurrentManagerService;
 import us.telran.pawnshop.service.LoanOrderService;
 
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.List;
-import java.util.Optional;
 
 import static us.telran.pawnshop.entity.enums.OrderType.*;
 
@@ -32,6 +31,7 @@ public class LoanOrderServiceImpl implements LoanOrderService {
     private final ManagerRepository managerRepository;
     private final PawnBranchRepository pawnBranchRepository;
     private final CurrentBranchInfo currentBranchInfo;
+    private final CurrentManagerService currentManagerService;
 
     @Value("${pawnshop.hundred.percents}")
     private BigDecimal hundred;
@@ -65,7 +65,7 @@ public class LoanOrderServiceImpl implements LoanOrderService {
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
         cashOperation.setPawnBranch(currentBranch);
-        cashOperation.setManager(getCurrentManager());
+        cashOperation.setManager(currentManagerService.getCurrentManager());
         currentBranch.setBalance(currentBranch.getBalance().add(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Receipt order#" + loanOrder.getOrderId() +
                 " for loanId " + loanOrder.getLoan().getLoanId());
@@ -104,7 +104,7 @@ public class LoanOrderServiceImpl implements LoanOrderService {
 
         CashOperation cashOperation = buildCashOperation(loanOrder);
 
-        cashOperation.setManager(getCurrentManager());
+        cashOperation.setManager(currentManagerService.getCurrentManager());
         cashOperation.setPawnBranch(currentBranch);
         currentBranch.setBalance(currentBranch.getBalance().subtract(cashOperation.getOperationAmount()));
         cashOperation.setDescription("Expense order#" + loanOrder.getOrderId() +
@@ -149,15 +149,6 @@ public class LoanOrderServiceImpl implements LoanOrderService {
                         .multiply(BigDecimal.valueOf(loan.getTerm().getDays())))));
         loan.setExpiredAt(loan.getExpiredAt().plusDays(loan.getTerm().getDays()));
         loanRepository.save(loan);
-    }
-
-    private Manager getCurrentManager() {
-        Long currentManagerId = SecurityUtils.getCurrentManagerId();
-        Optional<Manager> managerOptional = managerRepository.findById(currentManagerId);
-        if (managerOptional.isPresent()) {
-            return managerOptional.get();
-        }
-        throw new EntityNotFoundException("Manager not found");
     }
 
     private PawnBranch getCurrentBranch(Long branchId) {

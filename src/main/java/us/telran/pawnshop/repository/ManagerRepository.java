@@ -10,6 +10,7 @@ import java.util.Optional;
 @Repository
 public interface ManagerRepository extends JpaRepository<Manager, Long> {
 
-    @Query(nativeQuery = true, value = "SELECT * FROM managers WHERE email LIKE CONCAT(:email, '%')")
+    @Query("SELECT m FROM Manager m WHERE m.email = ?1")
     Optional<Manager> findManagerByEmail(String email);
+
 }

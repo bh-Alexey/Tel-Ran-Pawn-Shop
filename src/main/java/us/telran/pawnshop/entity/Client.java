@@ -48,7 +48,6 @@ public class Client {
     @Enumerated(STRING)
     private ClientStatus status;
 
-
     @Column(name = "ssn", length = 9, nullable = false, unique = true)
     private int socialSecurityNumber;
 

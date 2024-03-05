@@ -17,7 +17,7 @@
 	<description>Pawn-Shop</description>
 
 	<properties>
-		<java.version>17</java.version>
+		<java.version>21</java.version>
 	</properties>
 
 	<dependencies>
@@ -91,9 +91,15 @@
 		</dependency>
 
 		<dependency>
+			<groupId>org.quartz-scheduler</groupId>
+			<artifactId>quartz</artifactId>
+			<version>2.3.2</version>
+		</dependency>
+
+		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
-			<version>0.8.7</version>
+			<version>0.8.10</version>
 		</dependency>
 
     </dependencies>
@@ -145,7 +151,14 @@
 			<plugin>
 				<groupId>org.jacoco</groupId>
 				<artifactId>jacoco-maven-plugin</artifactId>
-				<version>0.8.7</version>
+				<version>0.8.10</version>
+				<configuration>
+					<excludes>
+						<!-- excludes all class files under us/telran/pawnshop/entity that are Hibernate Proxies -->
+						<exclude>us/telran/pawnshop/entity/*$*</exclude>
+					</excludes>
+				</configuration>
+
 				<executions>
 					<execution>
 						<id>default-prepare-agent</id>

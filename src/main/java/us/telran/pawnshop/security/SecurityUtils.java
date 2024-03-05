@@ -4,6 +4,7 @@ import lombok.experimental.UtilityClass;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 
+
 import java.util.Optional;
 
 @UtilityClass
@@ -17,5 +18,6 @@ public class SecurityUtils {
                 .map(auth -> ((ManagerDetails) auth.getPrincipal()).getManagerId())
                 .orElse(null);
     }
+
 }
 
